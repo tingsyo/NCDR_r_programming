@@ -8,15 +8,15 @@
 
 ## 參考書
 ### 主要
-[R Programming for Data Science](https://leanpub.com/rprogramming) by Roger Peng
+- [R Programming for Data Science](https://leanpub.com/rprogramming) by Roger Peng
 
 ### 其它
-[Elements of Data Analytic Style](https://leanpub.com/datastyle) by Jeff Leek
-[Exploratory Data Analysis with R](https://leanpub.com/exdata) by Roger Peng
-[Report Writing for Data Science in R](https://leanpub.com/reportwriting) by Roger Peng
-[Statistical Inference for Data Science](https://leanpub.com/LittleInferenceBook) by Brian Caffo
-[Regression Modeling for Data Science](https://leanpub.com/regmods) in R by Brian Caffo
-[Developing Data Products in R](https://leanpub.com/ddp) by Brian Caffo
+- [Elements of Data Analytic Style](https://leanpub.com/datastyle) by Jeff Leek
+- [Exploratory Data Analysis with R](https://leanpub.com/exdata) by Roger Peng
+- [Report Writing for Data Science in R](https://leanpub.com/reportwriting) by Roger Peng
+- [Statistical Inference for Data Science](https://leanpub.com/LittleInferenceBook) by Brian Caffo
+- [Regression Modeling for Data Science](https://leanpub.com/regmods) in R by Brian Caffo
+- [Developing Data Products in R](https://leanpub.com/ddp) by Brian Caffo
 
 ## 課程中使用的軟體與服務
 - R ([R project](https://cran.r-project.org/) / [Microsoft R Open](https://mran.revolutionanalytics.com/open/))
