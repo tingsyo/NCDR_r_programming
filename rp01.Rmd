@@ -1,0 +1,148 @@
+---
+title: "Getting start with R"
+author: "Ting-Shuo Yo"
+date: "September 23, 2016"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## 大綱
+
+- 什麼是 R？能吃嗎？
+- 動手前的前置作業
+- 安裝 R / Rstudio
+- 實際的例子，動手做做看
+- 基本概念
+
+
+## 為什麼要用 R ？
+
+- 免費
+- 整合開發環境
+- 套件豐富
+    - 資料讀取
+    - 資料清理
+    - 分析工具
+    - 繪圖報表
+- 開發者社群資源
+- 套件之間整合度高
+
+
+## R Programming
+
+- 變數型態
+- 輸入/輸出
+- 控制結構
+- 函數
+- 進階控制結構
+- 除錯
+- 最佳化
+
+## 動手做做看
+
+### 下載資料
+```http://opendata.epa.gov.tw/Data/DownloadFile/ATM00240/```
+
+```{r downloadurl, echo = TRUE, cache=TRUE}
+furl <- "http://service.dataqualia.com/misc/test01.csv"
+download.file(furl, destfile="test01.csv")
+```
+
+### 讀取資料
+```{r readcsv, echo = TRUE}
+data1 <- read.csv("test01.csv", header = F, encoding="UTF-8", stringsAsFactors=F)
+head(data1)
+```
+
+
+## 簡單繪圖 1/2
+
+```{r plotTempPoint, echo = TRUE, warning=FALSE}
+plot(data1$V6[which(data1$V2=="Tamsui")])
+```
+
+
+## 簡單繪圖 2/2
+
+```{r plotTempLine, echo = TRUE, warning=FALSE}
+plot(data1$V6[which(data1$V2=="Tamsui")], type="line")
+```
+
+
+## 快速查詢手冊
+
+###```?```[函數名稱] = ```help(```[函數名稱]```)```
+
+```{r quickhelp, echo=TRUE, eval=FALSE, warning=FALSE}
+help(plot, help_type="text")
+?plot
+```
+
+###```args(function)``` = 顯示函數的輸入/輸出參數
+```{r quickhelpargs, echo=TRUE, warning=FALSE}
+args(plot)
+```
+
+
+## 常用系統指令 1/2
+
+- getwd() = return current working directory
+- setwd() = set current working directory
+- dir.create("path/foldername", recursive = TRUE) = create directories/subdirectories
+- unlink(directory, recursive = TRUE) = delete directory and subdirectories``
+- list.files(recursive = TRUE) = list all, including subdirectories
+
+
+## 常用系統指令 2/2
+
+- ls() = list all objects in the local workspace
+- file.create("name") = create file
+    - exists("name") = return true/false exists in working directory
+    - info("name") = return file info
+    - info("name")$property = returns value for the specific attribute
+    - rename("name1", "name2") = rename file
+    - copy("name1", "name2") = copy file
+    - path("name1") = return path of file
+
+
+## R 常見符號
+
+- ```<-``` = assignment operator
+- ```#``` = comment
+- 輸入算式並按下 enter,即會自動計算結果,並且輸出在螢幕上
+- 輸入變數的名稱並按下 enter = ```print(x)```
+- ```[1]``` 會出現在螢幕輸出的最前面
+```{r operator, echo=TRUE, warning=FALSE}
+temp.tamsui <- data1$V6[which(data1$V2=="Tamsui")]
+temp.tamsui
+```
+
+
+## R基本物件
+
+- 5 種基本物件
+    1. character
+    2. numeric
+    3. integer
+    4. complex
+    5. logical
+```{r atomcalsses, echo=TRUE, warning=FALSE}
+a <- "a"
+is.character(a)
+is.integer(a)
+```
+
+
+## R數值資料
+- numbers generally treated as ```numeric``` objects (double precision real numbers - decimals)
+- ```Integer``` objects can be created by adding ```L``` to the end of a number(ex. ```1L```)
+- ```Inf``` = infinity, can be used in calculations
+- ```NaN``` = not a number/undefined
+- ```sqrt(value)``` = square root of value
+
+
+
+
