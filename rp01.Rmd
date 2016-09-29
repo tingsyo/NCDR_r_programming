@@ -88,28 +88,25 @@ args(plot)
 
 
 ## 常用系統指令 1/2
-
-- getwd() = return current working directory
-- setwd() = set current working directory
-- dir.create("path/foldername", recursive = TRUE) = create directories/subdirectories
-- unlink(directory, recursive = TRUE) = delete directory and subdirectories``
-- list.files(recursive = TRUE) = list all, including subdirectories
+- ```getwd()``` = return current working directory
+- ```setwd()``` = set current working directory
+- ```dir.create("path/foldername", recursive = TRUE)``` = create directories/subdirectories
+- ```unlink(directory, recursive = TRUE)``` = delete directory and subdirectories``
+- ```list.files(recursive = TRUE)``` = list all, including subdirectories
 
 
 ## 常用系統指令 2/2
-
-- ls() = list all objects in the local workspace
-- file.create("name") = create file
-    - exists("name") = return true/false exists in working directory
-    - info("name") = return file info
-    - info("name")$property = returns value for the specific attribute
-    - rename("name1", "name2") = rename file
-    - copy("name1", "name2") = copy file
-    - path("name1") = return path of file
+- ```ls()``` = list all objects in the local workspace
+- ```file.create("name")``` = create file
+    - ```exists("name")``` = return true/false exists in working directory
+    - ```info("name")``` = return file info
+    - ```info("name")$property``` = returns value for the specific attribute
+    - ```rename("name1", "name2")``` = rename file
+    - ```copy("name1", "name2")``` = copy file
+    - ```path("name1")``` = return path of file
 
 
 ## R 常見符號
-
 - ```<-``` = assignment operator
 - ```#``` = comment
 - 輸入算式並按下 enter,即會自動計算結果,並且輸出在螢幕上
@@ -121,8 +118,18 @@ temp.tamsui
 ```
 
 
-## R基本物件
+## R 語言基礎概念
+- 基本資料型態
+    - 基本物件
+    - Vectors and List
+    - Matrices and Data Frames
+    - Arrays
+    - Factors
+    
+- Missing Values
 
+
+## R基本物件
 - 5 種基本物件
     1. character
     2. numeric
@@ -142,6 +149,104 @@ is.integer(a)
 - ```Inf``` = infinity, can be used in calculations
 - ```NaN``` = not a number/undefined
 - ```sqrt(value)``` = square root of value
+
+
+## Vectors and Lists 1/3
+- atomic vector: 數個同型態的資料
+```{r vectors, echo=TRUE, warning=FALSE}
+vector <- c(1,2,3,4,5)      # c()=concatenate
+print(vector)
+print(vector * vector)      # 元件相乘 = vector[1] * vector[1] + ...
+print(t(vector) %*% vector) # 向量乘法
+```
+
+
+## Vectors and Lists 2/3
+- list() = 特殊的 vector, 可包含不同型態的成員
+```{r lists, echo=TRUE, warning=FALSE}
+l <- list("id"=101, "name"="John Doe", "scores"=c(8, 7, 8, 3, 9))
+print(l)
+sum(l$scores)    # = sum(l[[3]])
+```
+
+## Vectors and Lists 3/3
+- 資料型態轉換
+```{r coercion, echo=TRUE, warning=FALSE}
+x <- "0"
+as.numeric(x) 
+as.logical(x)
+as.complex(x)
+```
+
+
+## Matrices and Data Frames 1/3
+- ```matrix``` 包含同型態的資料, ```data.frame``` 可包含不同型態的資料
+- ```matrix(values, nrow = n, ncol = m)```
+```{r matrix, echo=TRUE, warning=FALSE}
+x <- c(1,2,3,4,5,6)               # x is a vector
+mx <- matrix(x, nrow=3, ncol=2)   # mx is a 3x2 matrix
+mx
+dim(mx)                           # get the dimension with dim()
+```
+
+
+## Matrices and Data Frames 2/3
+```{r matrix2, echo=TRUE, warning=FALSE}
+# initiate a vector
+x <-c(NA, 1, "cx", NA, 2, "dsa")
+class(x)
+# convert to matrix
+dim(x) <- c(3, 2)
+class(x)
+```
+
+
+## Matrices and Data Frames 3/3
+- ```data.frame``` 可包含不同型態的資料
+```{r dataframe, echo=TRUE, warning=FALSE}
+df <- data.frame("id"=101:105, "name"=c("Alex","Bob","Carl","Dan","Eve"))
+df
+df$name
+```
+
+## Factors
+- ```factor```: 類別資料
+```{r factors, echo=TRUE, warning=FALSE}
+df$name
+as.numeric(df$name)
+levels(df$name)
+```
+- 在分析時要確認```character```跟```factor```的差異.
+- ```data1 <- read.csv("test01.csv", header = F, encoding="UTF-8", stringsAsFactors=F)```
+
+## Arrays
+- ```array(data, dim, dimnames)``` 多維度資料
+```{r arrays, echo=TRUE, warning=FALSE}
+x <- 1:8
+array(x, c(2,2,2))
+```
+
+## Missing Values
+- ```NaN``` or ```NA``` = missing values
+- ```NaN``` = undefined mathematical operations
+- ```NA``` = any value not available or missing in the statistical sense
+    - any operations with ```NA``` results in ```NA```
+    - ```NA``` can have different classes potentially (integer, character, etc)
+    - Note: NaN is an NA value, but NA is not NaN
+- ```is.na()```, ```is.nan()``` = use to test if each element of the vector is NA and NaN
+    - Note: cannot compare NA (with ==) as it is not a value but a placeholder for a quantity that is not available
+- ```sum(my_na)``` = sum of a logical vector (```TRUE``` = 1 and ```FALSE``` = 0) is effectively the number of ```TRUEs```
+
+## Removing NA Values
+- ```is.na()``` = creates logical vector where T is where value exists, F is NA
+    - subsetting with the above result can return only the non NA elements
+- ```complete.cases(obj1, obj2)``` = creates logical vector where TRUE is where both values exist, and FALSE is where any is NA
+    - can be used on data frames as well
+    - complete.cases(data.frame) = creates logical vectors indicating which observation/row is good
+    - data.frame[logicalVector, ] = returns all observations with complete data
+
+## Imputing Missing Values
+- replacing missing values with estimates (can be averages from all other data with the similar conditions)
 
 
 

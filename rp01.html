@@ -190,26 +190,26 @@ head(data1)</pre>
 </article></slide><slide class=''><hgroup><h2>常用系統指令 1/2</h2></hgroup><article  id="-12">
 
 <ul>
-<li>getwd() = return current working directory</li>
-<li>setwd() = set current working directory</li>
-<li>dir.create(&quot;path/foldername&quot;, recursive = TRUE) = create directories/subdirectories</li>
-<li>unlink(directory, recursive = TRUE) = delete directory and subdirectories``</li>
-<li>list.files(recursive = TRUE) = list all, including subdirectories</li>
+<li><code>getwd()</code> = return current working directory</li>
+<li><code>setwd()</code> = set current working directory</li>
+<li><code>dir.create(&quot;path/foldername&quot;, recursive = TRUE)</code> = create directories/subdirectories</li>
+<li><code>unlink(directory, recursive = TRUE)</code> = delete directory and subdirectories``</li>
+<li><code>list.files(recursive = TRUE)</code> = list all, including subdirectories</li>
 </ul>
 
 </article></slide><slide class=''><hgroup><h2>常用系統指令 2/2</h2></hgroup><article  id="-22">
 
 <ul>
-<li>ls() = list all objects in the local workspace</li>
-<li>file.create(&quot;name&quot;) = create file
+<li><code>ls()</code> = list all objects in the local workspace</li>
+<li><code>file.create(&quot;name&quot;)</code> = create file
 
 <ul>
-<li>exists(&quot;name&quot;) = return true/false exists in working directory</li>
-<li>info(&quot;name&quot;) = return file info</li>
-<li>info(&quot;name&quot;)$property = returns value for the specific attribute</li>
-<li>rename(&quot;name1&quot;, &quot;name2&quot;) = rename file</li>
-<li>copy(&quot;name1&quot;, &quot;name2&quot;) = copy file</li>
-<li>path(&quot;name1&quot;) = return path of file</li>
+<li><code>exists(&quot;name&quot;)</code> = return true/false exists in working directory</li>
+<li><code>info(&quot;name&quot;)</code> = return file info</li>
+<li><code>info(&quot;name&quot;)$property</code> = returns value for the specific attribute</li>
+<li><code>rename(&quot;name1&quot;, &quot;name2&quot;)</code> = rename file</li>
+<li><code>copy(&quot;name1&quot;, &quot;name2&quot;)</code> = copy file</li>
+<li><code>path(&quot;name1&quot;)</code> = return path of file</li>
 </ul></li>
 </ul>
 
@@ -302,6 +302,21 @@ temp.tamsui</pre>
 ## [731] &quot;15.9&quot; &quot;15.9&quot; &quot;15.8&quot; &quot;15.1&quot; &quot;15&quot;   &quot;14.9&quot; &quot;15.1&quot; &quot;15.3&quot; &quot;15.1&quot; &quot;14.8&quot;
 ## [741] &quot;14.6&quot; &quot;14.5&quot; &quot;14.2&quot; &quot;13.6&quot;</pre>
 
+</article></slide><slide class=''><hgroup><h2>R 語言基礎概念</h2></hgroup><article  id="r-">
+
+<ul>
+<li>基本資料型態
+
+<ul>
+<li>基本物件</li>
+<li>Vectors and List</li>
+<li>Matrices and Data Frames</li>
+<li>Arrays</li>
+<li>Factors</li>
+</ul></li>
+<li>Missing Values</li>
+</ul>
+
 </article></slide><slide class=''><hgroup><h2>R基本物件</h2></hgroup><article  id="r">
 
 <ul>
@@ -330,9 +345,213 @@ is.character(a)</pre>
 <ul>
 <li>numbers generally treated as <code>numeric</code> objects (double precision real numbers - decimals)</li>
 <li><code>Integer</code> objects can be created by adding <code>L</code> to the end of a number(ex. <code>1L</code>)</li>
-<li>Inf = infinity, can be used in calculations</li>
-<li>NaN = not a number/undefined</li>
-<li>sqrt(value) = square root of value</li>
+<li><code>Inf</code> = infinity, can be used in calculations</li>
+<li><code>NaN</code> = not a number/undefined</li>
+<li><code>sqrt(value)</code> = square root of value</li>
+</ul>
+
+</article></slide><slide class=''><hgroup><h2>Vectors and Lists 1/3</h2></hgroup><article  id="vectors-and-lists-13">
+
+<ul>
+<li>atomic vector: 數個同型態的資料</li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>vector &lt;- c(1,2,3,4,5)      # c()=concatenate
+print(vector)</pre>
+
+<pre >## [1] 1 2 3 4 5</pre>
+
+<pre class = 'prettyprint lang-r'>print(vector * vector)      # 元件相乘 = vector[1] * vector[1] + ...</pre>
+
+<pre >## [1]  1  4  9 16 25</pre>
+
+<pre class = 'prettyprint lang-r'>print(t(vector) %*% vector) # 向量乘法</pre>
+
+<pre >##      [,1]
+## [1,]   55</pre>
+
+</article></slide><slide class=''><hgroup><h2>Vectors and Lists 2/3</h2></hgroup><article  id="vectors-and-lists-23">
+
+<ul>
+<li>list() = 特殊的 vector, 可包含不同型態的成員</li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>l &lt;- list(&quot;id&quot;=101, &quot;name&quot;=&quot;John Doe&quot;, &quot;scores&quot;=c(8, 7, 8, 3, 9))
+print(l)</pre>
+
+<pre >## $id
+## [1] 101
+## 
+## $name
+## [1] &quot;John Doe&quot;
+## 
+## $scores
+## [1] 8 7 8 3 9</pre>
+
+<pre class = 'prettyprint lang-r'>sum(l$scores)    # = sum(l[[3]])</pre>
+
+<pre >## [1] 35</pre>
+
+</article></slide><slide class=''><hgroup><h2>Vectors and Lists 3/3</h2></hgroup><article  id="vectors-and-lists-33">
+
+<ul>
+<li>資料型態轉換</li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>x &lt;- &quot;0&quot;
+as.numeric(x) </pre>
+
+<pre >## [1] 0</pre>
+
+<pre class = 'prettyprint lang-r'>as.logical(x)</pre>
+
+<pre >## [1] NA</pre>
+
+<pre class = 'prettyprint lang-r'>as.complex(x)</pre>
+
+<pre >## [1] 0+0i</pre>
+
+</article></slide><slide class=''><hgroup><h2>Matrices and Data Frames 1/3</h2></hgroup><article  id="matrices-and-data-frames-13">
+
+<ul>
+<li><code>matrix</code> 包含同型態的資料, <code>data.frame</code> 可包含不同型態的資料</li>
+<li><code>matrix(values, nrow = n, ncol = m)</code></li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>x &lt;- c(1,2,3,4,5,6)               # x is a vector
+mx &lt;- matrix(x, nrow=3, ncol=2)   # mx is a 3x2 matrix
+mx</pre>
+
+<pre >##      [,1] [,2]
+## [1,]    1    4
+## [2,]    2    5
+## [3,]    3    6</pre>
+
+<pre class = 'prettyprint lang-r'>dim(mx)                           # get the dimension with dim()</pre>
+
+<pre >## [1] 3 2</pre>
+
+</article></slide><slide class=''><hgroup><h2>Matrices and Data Frames 2/3</h2></hgroup><article  id="matrices-and-data-frames-23">
+
+<pre class = 'prettyprint lang-r'># initiate a vector
+x &lt;-c(NA, 1, &quot;cx&quot;, NA, 2, &quot;dsa&quot;)
+class(x)</pre>
+
+<pre >## [1] &quot;character&quot;</pre>
+
+<pre class = 'prettyprint lang-r'># convert to matrix
+dim(x) &lt;- c(3, 2)
+class(x)</pre>
+
+<pre >## [1] &quot;matrix&quot;</pre>
+
+</article></slide><slide class=''><hgroup><h2>Matrices and Data Frames 3/3</h2></hgroup><article  id="matrices-and-data-frames-33">
+
+<ul>
+<li><code>data.frame</code> 可包含不同型態的資料</li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>df &lt;- data.frame(&quot;id&quot;=101:105, &quot;name&quot;=c(&quot;Alex&quot;,&quot;Bob&quot;,&quot;Carl&quot;,&quot;Dan&quot;,&quot;Eve&quot;))
+df</pre>
+
+<pre >##    id name
+## 1 101 Alex
+## 2 102  Bob
+## 3 103 Carl
+## 4 104  Dan
+## 5 105  Eve</pre>
+
+<pre class = 'prettyprint lang-r'>df$name</pre>
+
+<pre >## [1] Alex Bob  Carl Dan  Eve 
+## Levels: Alex Bob Carl Dan Eve</pre>
+
+</article></slide><slide class=''><hgroup><h2>Factors</h2></hgroup><article  id="factors">
+
+<ul>
+<li><code>factor</code>: 類別資料</li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>df$name</pre>
+
+<pre >## [1] Alex Bob  Carl Dan  Eve 
+## Levels: Alex Bob Carl Dan Eve</pre>
+
+<pre class = 'prettyprint lang-r'>as.numeric(df$name)</pre>
+
+<pre >## [1] 1 2 3 4 5</pre>
+
+<pre class = 'prettyprint lang-r'>levels(df$name)</pre>
+
+<pre >## [1] &quot;Alex&quot; &quot;Bob&quot;  &quot;Carl&quot; &quot;Dan&quot;  &quot;Eve&quot;</pre>
+
+<ul>
+<li>在分析時要確認<code>character</code>跟<code>factor</code>的差異.</li>
+<li><code>data1 &lt;- read.csv(&quot;test01.csv&quot;, header = F, encoding=&quot;UTF-8&quot;, stringsAsFactors=F)</code></li>
+</ul>
+
+</article></slide><slide class=''><hgroup><h2>Arrays</h2></hgroup><article  id="arrays">
+
+<ul>
+<li><code>array(data, dim, dimnames)</code> 多維度資料</li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>x &lt;- 1:8
+array(x, c(2,2,2))</pre>
+
+<pre >## , , 1
+## 
+##      [,1] [,2]
+## [1,]    1    3
+## [2,]    2    4
+## 
+## , , 2
+## 
+##      [,1] [,2]
+## [1,]    5    7
+## [2,]    6    8</pre>
+
+</article></slide><slide class=''><hgroup><h2>Missing Values</h2></hgroup><article  id="missing-values">
+
+<ul>
+<li><code>NaN</code> or <code>NA</code> = missing values</li>
+<li><code>NaN</code> = undefined mathematical operations</li>
+<li><code>NA</code> = any value not available or missing in the statistical sense
+
+<ul>
+<li>any operations with <code>NA</code> results in <code>NA</code></li>
+<li><code>NA</code> can have different classes potentially (integer, character, etc)</li>
+<li>Note: NaN is an NA value, but NA is not NaN</li>
+</ul></li>
+<li><code>is.na()</code>, <code>is.nan()</code> = use to test if each element of the vector is NA and NaN
+
+<ul>
+<li>Note: cannot compare NA (with ==) as it is not a value but a placeholder for a quantity that is not available</li>
+</ul></li>
+<li><code>sum(my_na)</code> = sum of a logical vector (<code>TRUE</code> = 1 and <code>FALSE</code> = 0) is effectively the number of <code>TRUEs</code></li>
+</ul>
+
+</article></slide><slide class=''><hgroup><h2>Removing NA Values</h2></hgroup><article  id="removing-na-values">
+
+<ul>
+<li><code>is.na()</code> = creates logical vector where T is where value exists, F is NA
+
+<ul>
+<li>subsetting with the above result can return only the non NA elements</li>
+</ul></li>
+<li><code>complete.cases(obj1, obj2)</code> = creates logical vector where TRUE is where both values exist, and FALSE is where any is NA
+
+<ul>
+<li>can be used on data frames as well</li>
+<li>complete.cases(data.frame) = creates logical vectors indicating which observation/row is good</li>
+<li>data.frame[logicalVector, ] = returns all observations with complete data</li>
+</ul></li>
+</ul>
+
+</article></slide><slide class=''><hgroup><h2>Imputing Missing Values</h2></hgroup><article  id="imputing-missing-values">
+
+<ul>
+<li>replacing missing values with estimates (can be averages from all other data with the similar conditions)</li>
 </ul></article></slide>
 
 
