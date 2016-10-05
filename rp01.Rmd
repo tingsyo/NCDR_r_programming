@@ -52,23 +52,24 @@ download.file(furl, destfile="test01.csv")
 ```
 
 ### 讀取資料
-```{r readcsv, echo = TRUE}
+```{r readcsv, echo = TRUE, warning=FALSE}
 data1 <- read.csv("test01.csv", header = F, encoding="UTF-8", stringsAsFactors=F)
-head(data1)
+test1 <- data.frame("id"=data1$V1, "name"=data1$V2, "time"=as.Date(data1$V4), "pressure"=as.numeric(data1$V5), "temperature"=as.numeric(data1$V6), "rh"=as.numeric(data1$V7), "wind_speed"=as.numeric(data1$V8), "wind_direction"=data1$V10)
+head(test1)
 ```
 
 
 ## 簡單繪圖 1/2
 
 ```{r plotTempPoint, echo = TRUE, warning=FALSE}
-plot(data1$V6[which(data1$V2=="Tamsui")])
+plot(test1$temperature[which(test1$name=="Tamsui")])
 ```
 
 
 ## 簡單繪圖 2/2
 
 ```{r plotTempLine, echo = TRUE, warning=FALSE}
-plot(data1$V6[which(data1$V2=="Tamsui")], type="line")
+plot(test1$temperature[which(test1$name=="Tamsui")], type="line")
 ```
 
 
@@ -88,15 +89,15 @@ args(plot)
 
 
 ## 常用系統指令 1/2
-- ```getwd()``` = return current working directory
-- ```setwd()``` = set current working directory
-- ```dir.create("path/foldername", recursive = TRUE)``` = create directories/subdirectories
-- ```unlink(directory, recursive = TRUE)``` = delete directory and subdirectories``
-- ```list.files(recursive = TRUE)``` = list all, including subdirectories
+- ```getwd()``` = 顯示目前工作目錄
+- ```setwd()``` = 設定目前工作目錄
+- ```dir.create("path/foldername", recursive = TRUE)``` = 產生新目錄
+- ```unlink(directory, recursive = TRUE)``` = 刪除目錄
+- ```list.files(recursive = TRUE)``` = 顯示目前目錄的所有檔案
 
 
 ## 常用系統指令 2/2
-- ```ls()``` = list all objects in the local workspace
+- ```ls()``` = 顯示目前工作環境裡的所有物件
 - ```file.create("name")``` = create file
     - ```exists("name")``` = return true/false exists in working directory
     - ```info("name")``` = return file info
@@ -117,17 +118,16 @@ temp.tamsui <- data1$V6[which(data1$V2=="Tamsui")]
 temp.tamsui
 ```
 
+# R 語言基礎概念
 
-## R 語言基礎概念
-- 基本資料型態
-    - 基本物件
-    - Vectors and List
-    - Matrices and Data Frames
-    - Arrays
-    - Factors
-    
+## 基本資料型態
+- 基本物件
+- Vectors and List
+- Matrices and Data Frames
+- Arrays
+- Factors
 - Missing Values
-
+- Subsetting
 
 ## R基本物件
 - 5 種基本物件
@@ -144,11 +144,18 @@ is.integer(a)
 
 
 ## R數值資料
-- numbers generally treated as ```numeric``` objects (double precision real numbers - decimals)
-- ```Integer``` objects can be created by adding ```L``` to the end of a number(ex. ```1L```)
-- ```Inf``` = infinity, can be used in calculations
-- ```NaN``` = not a number/undefined
-- ```sqrt(value)``` = square root of value
+- 簡單的數值變數型態
+    - 浮點數一律以 `numeric` 物件表示 (double precision)
+    - 整數`Integer`一律是長整數，可用數字後面加 `L` 表示(ex. `1L`)
+    - `Inf` = 無窮大，可以在運算中使用
+    - `NaN` = 非數值資料
+- 豐富的數學和統計函數
+    - `sqrt(value)` = 開根號
+    - `sum(numbers)` / `mean(numbers)` = 加總/平均數
+    - `var(numbers)` / `sd(numbers)` = 變異數 / 標準差
+    - `cor(A, B)` / `cov(A,B)` = A 與 B 兩串資料的相關係數 / 共變數
+    - `prcomp(matrix)` = 主成分分析
+    - `fa(matrix)` = 因素分析
 
 
 ## Vectors and Lists 1/3
@@ -232,21 +239,744 @@ array(x, c(2,2,2))
 - ```NA``` = any value not available or missing in the statistical sense
     - any operations with ```NA``` results in ```NA```
     - ```NA``` can have different classes potentially (integer, character, etc)
-    - Note: NaN is an NA value, but NA is not NaN
-- ```is.na()```, ```is.nan()``` = use to test if each element of the vector is NA and NaN
-    - Note: cannot compare NA (with ==) as it is not a value but a placeholder for a quantity that is not available
-- ```sum(my_na)``` = sum of a logical vector (```TRUE``` = 1 and ```FALSE``` = 0) is effectively the number of ```TRUEs```
+    - Note: ```NaN``` is an ```NA``` value, but ```NA``` is not ```NaN```
+- ```is.na()```, ```is.nan()``` = use to test if each element of the vector is ```NA``` and ```NaN```
+
+- ```sum(my_na)``` = sum of a logical vector (```TRUE``` = 1 and ```FALSE``` = 0) is effectively the number of ```TRUE```s
 
 ## Removing NA Values
 - ```is.na()``` = creates logical vector where T is where value exists, F is NA
     - subsetting with the above result can return only the non NA elements
-- ```complete.cases(obj1, obj2)``` = creates logical vector where TRUE is where both values exist, and FALSE is where any is NA
+- ```complete.cases(obj1, obj2)``` = creates logical vector where ```TRUE``` is where both values exist, and ```FALSE``` is where any is NA
     - can be used on data frames as well
-    - complete.cases(data.frame) = creates logical vectors indicating which observation/row is good
-    - data.frame[logicalVector, ] = returns all observations with complete data
+    - ```complete.cases(data.frame)``` = creates logical vectors indicating which observation/row is good
+    - ```data.frame[logicalVector, ]``` = returns all observations with complete data
 
 ## Imputing Missing Values
 - replacing missing values with estimates (can be averages from all other data with the similar conditions)
+```{r imputation10, echo=TRUE, warning=FALSE}
+x <- c(1,2,3,NA,4,5)
+x
+is.na(x)
+x[is.na(x)] <- 0
+x
+```
+
+## Sequence of Numbers
+```{r sequence, echo=TRUE, warning=FALSE}
+1:10    # creates a sequence of numbers from first number to second number 
+seq(1, 10, by=2)
+rep(0, times=10)
+```
+
+## Subsetting
+- R uses *one based index* –> starts counting at 1
+- ```[]``` = 用來指定`vector`裡的成員，也可以同時指定多個成員，例如： ```[1:2]```
+- ```[[]]``` = 用來指定`list / data.frame`裡的成員
+- ```$``` = 用來指定`list / data.frame`裡有`name`的成員
+
+## Indexing 1/2
+- ```data[x, y, ...]``` can be used to index a specific element in a data collection ( array, matrix, or data.frame)
+```{r indexing1, echo=TRUE, warning=FALSE}
+x <- array(1:8, c(4,2))
+x
+x[1,2]
+```
+
+## Indexing 2/2
+- Use "sapce" to indicate "every element" in the data collection.
+```{r indexing2, echo=TRUE, warning=FALSE}
+x <- array(1:8, c(4,2))
+x
+x[2:3,]
+```
+
+
+# 學寫程式沒有捷徑，just do it!
+Quiz Time
+
+
+## Quiz 1
+- 在命令列輸入 2**4，會得到：
+    1. 2
+    2. 4
+    3. 16
+    4. 32
+
+
+## Quiz 2
+- 要從 data frame test1 裡挑選前兩欄，應該用以下哪個指令：
+    1. test1[1,2]
+    2. test1[c(1,2)]
+    3. test1[,c(1,2)]
+    4. test1[c(1,2),]
+
+
+## Quiz 3
+- 在命令列輸入 ```2+NA```，會得到：
+    1. ```NA```
+    2. ```NULL```
+    3. 2
+    4. 0
+
+
+#基本控制結構
+## R 語言基本控制結構
+- ```if - else```
+- ```for```
+- ```while```
+- ```repeat``` and ```break```
+- ```next``` and ```return```
+
+
+## if - then
+```{r ifelse, echo=TRUE, warning=FALSE}
+x <- 85
+#
+if(x > 90){            # if(<condition-1>){
+  grade <- "A"         #     #do something
+} else if(x > 80){     # } else if(<condition-2>) {
+  grade <- "B"         #     #do something
+} else {               # } else {
+  grade <- "C"         #     #do something
+}                      # }
+#
+print(c(x, grade))
+```
+
+## for loop
+```{r forloop, echo=TRUE, warning=FALSE}
+for( x in 88:92){        # for(<condition>) { do-something }
+  if(x > 90){          
+    grade <- "A"       
+  } else if(x > 80){    
+    grade <- "B"         
+  } else {              
+    grade <- "C"         
+  }                     
+  print(c(x, grade))
+}
+```
+
+## Nested for loops
+
+`for` loops can be nested.
+
+```r
+x <- matrix(1:6, 2, 3)
+
+for(i in seq_len(nrow(x))) {
+        for(j in seq_len(ncol(x))) {
+                print(x[i, j])
+        }   
+}
+```
+
+注意：大於三層以上的巢狀迴圈，會非常難以閱讀
+
+
+
+## while loop
+While 迴圈從檢查一個邏輯敘述開始，如果是 true，才開始執行迴圈內容，執行完後，再重新檢查邏輯敘述，週而復始。
+
+```r
+count <- 0
+while(count < 10) {
+        print(count)
+        count <- count + 1
+}
+```
+
+注意：While 的邏輯敘述要小心使用，以免陷入無窮迴圈。
+
+
+## while
+有時候，我們會需要同時判斷多個狀況是否符合
+
+```r
+z <- 5
+
+while(z >= 3 && z <= 10) {
+        print(z)
+        coin <- rbinom(1, 1, 0.5)
+        
+        if(coin == 1) {  ## random walk
+                z <- z + 1
+        } else {
+                z <- z - 1
+        } 
+}
+```
+
+多個邏輯陳述的判斷一律是左邊的優先。
+
+
+
+## repeat
+`repeat` 會啟動一個無窮迴圈 ，直到看到`break`才停下來。
+
+```r
+x0 <- 1
+tol <- 1e-8
+
+repeat {
+        x1 <- computeEstimate()
+        
+        if(abs(x1 - x0) < tol) {
+                break
+        } else {
+                x0 <- x1
+        } 
+}
+```
+
+
+## repeat
+- 使用 `repeat` 的風險，是如果偵測的狀況沒有發生，就永遠不會停下來。
+    - 例如：數值方法一直沒有收斂。
+    
+- 比較好的方法，是放一個次數的限制，強迫迴圈停止。
+
+
+
+## next, return
+在迴圈裡，我們有時候會想跳過某些情況，這時候`next`就派上用場了。 
+
+```r
+for(i in 1:100) {
+        if(i <= 20) {
+                ## Skip the first 20 iterations
+                next 
+        }
+        ## Do something here
+}
+```
+`return` 會強迫迴圈停止並且傳回指定的資料。
+
+
+
+## Control Structures
+
+小結
+
+- R 主要的控制結構有 `if`, `while`, 和 `for` ，用來控制程式的運行和停止
+
+- 「無窮迴圈」應該要極力避免，即使在理論上是正確的。
+
+- 控制結構主要是用在「寫程式」，如果是在對話視窗裡工作，通常比較少用。（為什麼？）
+
+
+#資料輸入與輸出 I/O
+## 讀取資料
+R 讀取資料的常用函數： 
+
+- `read.table`, `read.csv`：讀取純文字的表格資料.
+- `readLines`：讀取文字檔.
+- `source`： 讀取並執行 R 程式檔 (`inverse` of `dump`).
+- `dget`：讀取 R 程式檔 (`inverse` of `dput`).
+- `load`：讀取 workspaces 檔（`*.RData`）.
+- `unserialize`:讀取 R 物件檔.
+
+
+## 輸出資料
+R 輸出資料的常用函數： 
+
+- write.table
+- writeLines
+- dump
+- dput
+- save
+- serialize
+
+
+## 利用 read.table 函數讀取資料
+
+`read.table` 是最常用的資料讀取函數之一，主要包含幾個參數:
+
+- `file`：檔名（或檔案物件）
+- `header`：T/F，檔案是否第一行包含欄位名稱
+- `sep`：分隔資料欄位的符號
+- `colClasses`：vector，欄位的資料型態
+- `nrows`：要讀取資料的列數
+- `comment.char`：註解符號
+- `skip`：開頭要跳過的行數
+- `stringsAsFactors`：T/F，要不要自動把文字資料轉換成 factor
+
+
+## read.table
+在資料量不大的情況下，可以不加任何參數使用 `read.table`
+
+```r
+data <- read.table("foo.txt")
+```
+
+R 會自動：
+
+- 跳過開頭是 `#` 的資料列
+- 計算欄位數量
+- 偵測每個欄位的資料型態(但是有時會出錯)
+
+加上參數，可以讓 R 的運行加快。
+
+- `read.csv` 跟 `read.table` 基本上一樣,只是預設以逗號分隔欄位
+
+
+## 用 read.table 讀取較大的資料檔
+R 預設會把所有的資料讀到記憶體中，所以有些建議可以參考：
+
+- 閱讀 `?read.table`
+- 如果確定檔案裡沒有註解，設定 `comment.char = ""`
+- 用 `colClasses` 指定欄位資料型態,可以加速到兩倍。
+
+- 如果不知道欄位資料型態,可以先讀少數資料來判斷，例如：
+```r
+initial <- read.table("datatable.txt", nrows = 100)
+classes <- sapply(initial, class)
+tabAll <- read.table("datatable.txt",
+                     colClasses = classes)
+```
+- 指定 `nrows`，雖然不會加速讀取，但是可以節省記憶體。
+
+
+
+## 以純文字型態輸出
+
+- `dump` 和 `dput` 會以純文字型態輸出資料，可編輯，並且包含 meta-data，在資料損毀的時候比較可能復原。
+- 純文字型態的輸出，可以和版本管理系統結合的較好，像是 `subversion` 或 `git` 
+- 純文字型態的輸出符合 “Unix philosophy”，可以跟其他命令列工具緊密結合 
+- 缺點：佔據比較大的儲存空間
+
+
+## dput / dget
+
+我們可以用 `dput` 輸出 R 物件，並且以 `dget` 讀取
+
+```r
+> y <- data.frame(a = 1, b = "a")
+> dput(y)
+structure(list(a = 1,
+               b = structure(1L, .Label = "a",
+                             class = "factor")),
+          .Names = c("a", "b"), row.names = c(NA, -1L),
+          class = "data.frame")
+> dput(y, file = "y.R")
+> new.y <- dget("y.R")
+> new.y
+   a  b 
+1  1  a
+```
+
+
+## dump / source
+
+我們可以用 `dump` 輸出多個 R 物件，並且以 `source` 讀取
+
+```r
+> x <- "foo"
+> y <- data.frame(a = 1, b = "a")
+> dump(c("x", "y"), file = "data.R") 
+> rm(x, y)
+> source("data.R")
+> y
+  a  b 
+1 1  a
+> x
+[1] "foo"
+```
+
+
+## 檔案物件
+
+R 的資料讀取是透過 _connection_ 物件，它可以是檔案或其他型態：
+
+- `file`: 開啟本地檔案
+- `gzfile`: 開啟 gzip 檔
+- `bzfile`: 開啟 bzip2 檔 
+- `url`: 開啟網址
+
+
+## File Connections
+
+```r
+> str(file)
+function (description = "", open = "", blocking = TRUE,
+          encoding = getOption("encoding"))
+```
+
+- `description`: 檔名 
+- `open` 可以用的參數包括
+    - “r”: 唯獨
+    - “w”: 寫入(並且刪除原有資料)
+    - “a”: 延續寫入
+    - “rb”, “wb”, “ab” reading, writing, or appending in binary mode
+
+
+## Connections
+
+雖然 connections 是很好用的物件型態，但是實作上除非要對檔案本身作進階處理，很少會直接用。
+
+```r
+con <- file("foo.txt", "r")
+data <- read.csv(con)
+close(con)
+```
+
+的效果跟下面的一行指令完全相同
+
+```r
+data <- read.csv("foo.txt")
+```
+
+
+## 逐行讀取文字檔
+
+```r
+> con <- gzfile("words.gz") 
+> x <- readLines(con, 10) 
+> x
+ [1] "1080"     "10-point" "10th"     "11-point"
+ [5] "12-point" "16-point" "18-point" "1st"
+ [9] "2"        "20-point"
+```
+
+`writeLines` 函數會將一個文字 vector 的成員逐行的輸出到指定的檔案。
+
+
+## 逐行讀取文字檔
+
+`readLines` 在讀取網頁資料上也很方便：
+
+```r
+## This might take time
+con <- url("http://www.jhsph.edu", "r")
+x <- readLines(con)
+> head(x)
+[1] "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">"
+[2] ""
+[3] "<html>"
+[4] "<head>"
+[5] "\t<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8
+```
+
+
+# Quiz Time: Control and I/O
+
+## 資料 data_quiz_1.csv 題組 Part 1
+
+1. 請讀取 `data_quiz_1.csv`， 請問資料有幾欄？欄位名稱是什麼？
+2. 將資料的前兩列輸出在 console 上，輸出長得怎麼樣?
+3. 總共有多少筆觀測資料？
+4. 將資料的最後兩列輸出在 console 上，輸出長得怎麼樣?
+5. 第47筆觀測的 `Ozone` 值是多少？
+
+
+## 解答 1
+請讀取 `data_quiz_1.csv`， 請問資料有幾欄？欄位名稱是什麼？
+```{r quiz0201, echo=TRUE, warning=FALSE}
+data <- read.csv("data_quiz_1.csv")
+dim(data)
+names(data)
+```
+
+
+## 解答 2
+將資料的前兩列輸出在 console 上，輸出長得怎麼樣?
+```{r quiz0202, echo=TRUE, warning=FALSE}
+head(data, 2)
+```
+
+
+## 解答 3
+總共有多少筆觀測資料？
+```{r quiz0203, echo=TRUE, warning=FALSE}
+nrow(data)
+```
+
+
+## 解答 4
+將資料的最後兩列輸出在 console 上，輸出長得怎麼樣?
+```{r quiz0204, echo=TRUE, warning=FALSE}
+tail(data, 2)
+```
+
+
+## 解答 5
+第47筆觀測的 `Ozone` 值是多少？
+```{r quiz0205, echo=TRUE, warning=FALSE}
+data[47,]
+data$Ozone[47]
+```
+
+
+## 資料 data_quiz_1.csv 題組 Part 2
+
+6. `Ozone` 欄位有多少筆 missing data？
+7. `Ozone` 欄位的平均值是多少？(請將 NA 值排除)
+8. 選取資料中 `Ozone` 大於 31 而且 `Temp` 大於 90 的觀測，這些觀測的 `Solar` 欄位平均值是多少？
+9. `Month` 是 6 的 `Temp` 平均值是多少？
+10. 五月的 `Ozone` 最大值是多少？(`Month=5`)
+
+
+## 解答 6
+`Ozone` 欄位有多少筆 missing data？
+```{r quiz0206, echo=TRUE, warning=FALSE}
+sum(is.na(data$Ozone))
+sum(!complete.cases(data$Ozone))
+```
+
+
+## 解答 7
+`Ozone` 欄位的平均值是多少？(請將 NA 值排除)
+```{r quiz0207, echo=TRUE, warning=FALSE}
+apply(data, 2, mean)
+mean(data$Ozone, na.rm=TRUE)
+```
+
+
+## 解答 8
+選取資料中 `Ozone` 大於 31 而且 `Temp` 大於 90 的觀測，這些觀測的 `Solar` 欄位平均值是多少？
+```{r quiz0208, echo=TRUE, warning=FALSE}
+subdata <- subset(data, data$Ozone>31 & data$Temp>90, select=Solar.R)
+apply(subdata, 2, mean)
+mean(data$Solar.R[which(data$Ozone>31 & data$Temp>90)], na.rm=T)
+```
+
+
+
+## 解答 9
+`Month` 是 6 的 `Temp` 平均值是多少？
+```{r quiz0209, echo=TRUE, warning=FALSE}
+subdata <- subset(data, data$Month==6, select=Temp)
+apply(subdata, 2, mean)
+mean(data$Temp[which(data$Month==6)], na.rm=T)
+```
+
+
+
+## 解答 10
+五月的 `Ozone` 最大值是多少？(`Month=5`)
+```{r quiz0210, echo=TRUE, warning=FALSE}
+subdata <- subset(data, data$Month==5, select=Ozone)
+max(subdata, na.rm=TRUE)
+max(data$Ozone[which(data$Month==5)], na.rm=T)
+```
+
+
+# 函數與套件
+
+## R 的內建函數
+R 內建了豐富的數學和統計函數，例如：
+
+- `sqrt(value)` = 開根號
+- `sum(numbers)` / `mean(numbers)` = 加總/平均數
+- `var(numbers)` / `sd(numbers)` = 變異數 / 標準差
+- `cor(A, B)` / `cov(A,B)` = A 與 B 兩串資料的相關係數 / 共變數
+- `prcomp(matrix)` = 主成分分析
+- `fa(matrix)` = 因素分析
+
+
+
+## 自訂函數 1/2
+回顧剛剛看過的例子： 
+
+```{r func, echo=TRUE, warning=FALSE}
+for( x in 88:92){
+  if(x > 90){          
+    grade <- "A"       
+  } else if(x > 80){    
+    grade <- "B"         
+  } else {              
+    grade <- "C"         
+  }                     
+  print(c(x, grade))
+}
+```
+
+
+## Functions
+
+Functions are created using the `function()` directive and are stored as R objects just like anything else. In particular, they are R objects of class “function”.
+
+```r
+f <- function(<arguments>) {
+        ## Do something interesting
+}
+```
+
+Functions in R are “first class objects”, which means that they can be treated much like any other R object. Importantly,
+- Functions can be passed as arguments to other functions
+- Functions can be nested, so that you can define a function inside of another function
+- The return value of a function is the last expression in the function body to be evaluated.
+
+---
+
+## Function Arguments
+
+Functions have _named arguments_ which potentially have _default values_.
+- The _formal arguments_ are the arguments included in the function definition 
+- The `formals` function returns a list of all the formal arguments of a function 
+- Not every function call in R makes use of all the formal arguments
+- Function arguments can be _missing_ or might have default values
+
+---
+
+## Argument Matching
+
+R functions arguments can be matched positionally or by name. So the
+following calls to `sd` are all equivalent
+
+```r
+> mydata <- rnorm(100)
+> sd(mydata)
+> sd(x = mydata)
+> sd(x = mydata, na.rm = FALSE)
+> sd(na.rm = FALSE, x = mydata)
+> sd(na.rm = FALSE, mydata)
+```
+
+Even though it’s legal, I don’t recommend messing around with the
+order of the arguments too much, since it can lead to some confusion.
+
+---
+
+## Argument Matching
+
+You can mix positional matching with matching by name. When an argument is matched by name, it is “taken out” of the argument list and the remaining unnamed arguments are matched in the order that they are listed in the function definition.
+
+```r
+> args(lm)
+function (formula, data, subset, weights, na.action,
+          method = "qr", model = TRUE, x = FALSE,
+          y = FALSE, qr = TRUE, singular.ok = TRUE,
+          contrasts = NULL, offset, ...)
+```
+
+The following two calls are equivalent.
+
+```r
+lm(data = mydata, y ~ x, model = FALSE, 1:100)
+lm(y ~ x, mydata, 1:100, model = FALSE)
+```
+
+---
+
+## Argument Matching
+
+- Most of the time, named arguments are useful on the command line when you have a long argument list and you want to use the defaults for everything except for an argument near the end of the list
+- Named arguments also help if you can remember the name of the argument and not its position on the argument list (plotting is a good example).
+
+---
+
+## Argument Matching
+
+Function arguments can also be _partially_ matched, which is useful for interactive work. The order of operations when given an argument is
+
+1. Check for exact match for a named argument
+2. Check for a partial match
+3. Check for a positional match
+
+---
+
+## Defining a Function
+
+```r
+f <- function(a, b = 1, c = 2, d = NULL) {
+
+}
+```
+
+In addition to not specifying a default value, you can also set an argument value to `NULL`.
+
+---
+
+## Lazy Evaluation
+
+Arguments to functions are evaluated _lazily_, so they are evaluated only as needed.
+
+```{r}
+f <- function(a, b) {
+        a^2
+} 
+f(2)
+```
+
+This function never actually uses the argument `b`, so calling `f(2)` will not produce an error because the 2 gets positionally matched to `a`.
+
+---
+
+
+## The “...” Argument
+
+The ... argument indicate a variable number of arguments that are usually passed on to other functions.
+
+- ... is often used when extending another function and you don’t want to copy the entire argument list of the original function
+
+```r
+myplot <- function(x, y, type = "l", ...) {
+        plot(x, y, type = type, ...)
+}
+```
+- Generic functions use ... so that extra arguments can be passed to methods
+(more on this later).
+
+```r
+> mean
+function (x, ...)
+UseMethod("mean")
+```
+
+---
+
+## The “...” Argument
+
+The ... argument is also necessary when the number of arguments passed to the function cannot be known in advance.
+
+```r
+> args(paste)
+function (..., sep = " ", collapse = NULL)
+
+> args(cat)
+function (..., file = "", sep = " ", fill = FALSE,
+    labels = NULL, append = FALSE)
+```
+
+---
+
+## Arguments Coming After the “...” Argument
+
+One catch with ... is that any arguments that appear _after_ ... on the argument list must be named explicitly and cannot be partially matched.
+
+```r
+> args(paste)
+function (..., sep = " ", collapse = NULL)
+
+> paste("a", "b", sep = ":")
+[1] "a:b"
+
+> paste("a", "b", se = ":")
+[1] "a b :"
+```
+
+
+## 自訂函數 2/2
+把分數換成等第的功能，我們用了很多次，可以獨立出來寫成函數：
+
+```{r func2, echo=TRUE, warning=FALSE}
+grading <- function(x){
+  if(x > 90){          
+    grade <- "A"       
+  } else if(x > 80){    
+    grade <- "B"         
+  } else {              
+    grade <- "C"         
+  }                     
+  print(c(x, grade))
+}
+
+for(x in 88:92){
+  grading(x)
+}
+```
 
 
 
