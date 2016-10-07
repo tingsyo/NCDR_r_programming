@@ -1,0 +1,189 @@
+---
+title: "Functions and Packages"
+author: "Ting-Shuo Yo"
+date: "October 7, 2016"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+# 函數與套件
+
+## 函數 Function
+使用 `function()` 宣告一個R物件，即可製作函數。
+
+```r
+f <- function(<arguments>) {
+        ## Do something interesting
+}
+```
+
+在 R 語言中，函數屬於物件的一種，因此有以下特性：
+
+- 可以被當成參數，傳遞給其他函數
+- 可以存在另一個函數當中
+- 如未特別指定，最後一行的結果會自動被當作回傳值
+
+
+## R 的內建函數
+R 內建了豐富的數學和統計函數，例如：
+
+- `sqrt(value)` = 開根號
+- `sum(numbers)` / `mean(numbers)` = 加總/平均數
+- `var(numbers)` / `sd(numbers)` = 變異數 / 標準差
+- `cor(A, B)` / `cov(A,B)` = A 與 B 兩串資料的相關係數 / 共變數
+- `prcomp(matrix)` = 主成分分析
+- `fa(matrix)` = 因素分析
+
+
+## 自訂函數 1/2
+回顧剛剛看過的例子： 
+
+```{r func, echo=TRUE, warning=FALSE}
+for( x in 88:92){
+  if(x > 90){          
+    grade <- "A"       
+  } else if(x > 80){    
+    grade <- "B"         
+  } else {              
+    grade <- "C"         
+  }                     
+  print(c(x, grade))
+}
+```
+
+## 自訂函數 2/2
+把分數換成等第的功能，我們用了很多次，可以獨立出來寫成函數：
+
+```{r func2, echo=TRUE, warning=FALSE}
+grading <- function(x){
+  if(x > 90){          
+    grade <- "A"       
+  } else if(x > 80){    
+    grade <- "B"         
+  } else {              
+    grade <- "C"         
+  }                     
+  print(c(x, grade))
+}
+
+for(x in 88:92){
+  grading(x)
+}
+```
+
+
+---
+
+## 函數的參數 Function Arguments
+函數都有參數（_named arguments_），而參數可以有預設值（_default values_）。
+
+- 正式參數（_formal arguments_）指的是在函數定義時已經明確標出的參數。
+- 可以用 `formals` 函數來列出一個函數的正式參數。 
+- 呼叫函數的時候，不一定會用到所有的正式參數。
+- 函數的參數可以 _missing_ 或是有預設值。
+
+
+## 參數比對 Argument Matching
+R 函數的參數可以用「位置」或「名稱」來比對。以下對 `sd` 函數的呼叫都是一樣的：
+
+```r
+> mydata <- rnorm(100)
+> sd(mydata)
+> sd(x = mydata)
+> sd(x = mydata, na.rm = FALSE)
+> sd(na.rm = FALSE, x = mydata)
+> sd(na.rm = FALSE, mydata)
+```
+
+雖然參數的先後可以不依照順序，但是建議還是盡量依序排列，以利閱讀。
+
+
+
+## 參數比對 Argument Matching
+「位置比對」和「名稱比對」是可以混用的，有名稱的會優先比對，剩下的依照位置順序來比對。
+以 `lm` 函數為例（linear model 線性模型）：
+
+```r
+> args(lm)
+function (formula, data, subset, weights, na.action,
+          method = "qr", model = TRUE, x = FALSE,
+          y = FALSE, qr = TRUE, singular.ok = TRUE,
+          contrasts = NULL, offset, ...)
+```
+
+以下兩種呼叫方式的結果是一樣的：
+
+```r
+lm(data = mydata, y ~ x, model = FALSE, 1:100)
+lm(y ~ x, mydata, 1:100, model = FALSE)
+```
+
+
+
+## 函數的定義方式 Defining a Function
+
+```r
+f <- function(a, b = 1, c = 2, d = NULL) {
+
+}
+```
+
+參數可以指定預設值，或是不指定預設值，還可以設為 `NULL`.
+
+
+
+## The “...” Argument
+
+參數裡的 ... 表示「有一些其他參數」，通常是用來進一步傳給其他函數。
+
+- 當你的函數會呼叫另一個函數，但是又不想把所有的參數寫出來的時候，可以用...來表示。
+
+```r
+myplot <- function(x, y, type = "l", ...) {
+        plot(x, y, type = type, ...)
+}
+```
+- 很多內建函數都有 ... 參數，以便用來做為中間函數。
+
+```r
+> mean
+function (x, ...)
+UseMethod("mean")
+```
+
+
+
+## The “...” Argument
+
+有時後我們無法事先得知有哪些參數會被使用到，此時 ... 就是必要的參數。
+
+```r
+> args(paste)
+function (..., sep = " ", collapse = NULL)
+
+> args(cat)
+function (..., file = "", sep = " ", fill = FALSE,
+    labels = NULL, append = FALSE)
+```
+
+
+
+## Arguments Coming After the “...” Argument
+
+在 ... 後面的參數必須明確指定名稱。
+
+```r
+> args(paste)
+function (..., sep = " ", collapse = NULL)
+
+> paste("a", "b", sep = ":")
+[1] "a:b"
+
+> paste("a", "b", se = ":")
+[1] "a b :"
+```
+

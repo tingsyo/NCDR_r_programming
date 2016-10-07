@@ -1,0 +1,322 @@
+---
+title: "Getting start with R"
+author: "Ting-Shuo Yo"
+date: "September 23, 2016"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## 大綱
+
+- 什麼是 R？能吃嗎？
+- 動手前的前置作業
+- 安裝 R / Rstudio
+- 實際的例子，動手做做看
+- 基本概念
+
+
+## 為什麼要用 R ？
+
+- 免費
+- 整合開發環境
+- 套件豐富
+    - 資料讀取
+    - 資料清理
+    - 分析工具
+    - 繪圖報表
+- 開發者社群資源
+- 套件之間整合度高
+
+
+## R Programming
+
+- 變數型態
+- 輸入/輸出
+- 控制結構
+- 函數
+- 進階控制結構
+- 除錯
+- 最佳化
+
+## 動手做做看
+
+### 下載資料
+```http://opendata.epa.gov.tw/Data/DownloadFile/ATM00240/```
+
+```{r downloadurl, echo = TRUE, cache=TRUE}
+furl <- "http://service.dataqualia.com/misc/test01.csv"
+download.file(furl, destfile="test01.csv")
+```
+
+### 讀取資料
+```{r readcsv, echo = TRUE, warning=FALSE}
+data1 <- read.csv("test01.csv", header = F, encoding="UTF-8", stringsAsFactors=F)
+test1 <- data.frame("id"=data1$V1, "name"=data1$V2, "time"=as.Date(data1$V4), "pressure"=as.numeric(data1$V5), "temperature"=as.numeric(data1$V6), "rh"=as.numeric(data1$V7), "wind_speed"=as.numeric(data1$V8), "wind_direction"=data1$V10)
+head(test1)
+```
+
+
+## 簡單繪圖 1/2
+
+```{r plotTempPoint, echo = TRUE, warning=FALSE}
+plot(test1$temperature[which(test1$name=="Tamsui")])
+```
+
+
+## 簡單繪圖 2/2
+
+```{r plotTempLine, echo = TRUE, warning=FALSE}
+plot(test1$temperature[which(test1$name=="Tamsui")], type="line")
+```
+
+
+## 快速查詢手冊
+
+###```?```[函數名稱] = ```help(```[函數名稱]```)```
+
+```{r quickhelp, echo=TRUE, eval=FALSE, warning=FALSE}
+help(plot, help_type="text")
+?plot
+```
+
+###```args(function)``` = 顯示函數的輸入/輸出參數
+```{r quickhelpargs, echo=TRUE, warning=FALSE}
+args(plot)
+```
+
+
+## 常用系統指令 1/2
+- ```getwd()``` = 顯示目前工作目錄
+- ```setwd()``` = 設定目前工作目錄
+- ```dir.create("path/foldername", recursive = TRUE)``` = 產生新目錄
+- ```unlink(directory, recursive = TRUE)``` = 刪除目錄
+- ```list.files(recursive = TRUE)``` = 顯示目前目錄的所有檔案
+
+
+## 常用系統指令 2/2
+- ```ls()``` = 顯示目前工作環境裡的所有物件
+- ```file.create("name")``` = create file
+    - ```exists("name")``` = return true/false exists in working directory
+    - ```info("name")``` = return file info
+    - ```info("name")$property``` = returns value for the specific attribute
+    - ```rename("name1", "name2")``` = rename file
+    - ```copy("name1", "name2")``` = copy file
+    - ```path("name1")``` = return path of file
+
+
+## R 常見符號
+- ```<-``` = assignment operator
+- ```#``` = comment
+- 輸入算式並按下 enter,即會自動計算結果,並且輸出在螢幕上
+- 輸入變數的名稱並按下 enter = ```print(x)```
+- ```[1]``` 會出現在螢幕輸出的最前面
+```{r operator, echo=TRUE, warning=FALSE}
+temp.tamsui <- data1$V6[which(data1$V2=="Tamsui")]
+temp.tamsui
+```
+
+# R 語言基礎概念
+
+## 基本資料型態
+- 基本物件
+- Vectors and List
+- Matrices and Data Frames
+- Arrays
+- Factors
+- Missing Values
+- Subsetting
+
+## R基本物件
+- 5 種基本物件
+    1. character
+    2. numeric
+    3. integer
+    4. complex
+    5. logical
+```{r atomcalsses, echo=TRUE, warning=FALSE}
+a <- "a"
+is.character(a)
+is.integer(a)
+```
+
+
+## R數值資料
+- 簡單的數值變數型態
+    - 浮點數一律以 `numeric` 物件表示 (double precision)
+    - 整數`Integer`一律是長整數，可用數字後面加 `L` 表示(ex. `1L`)
+    - `Inf` = 無窮大，可以在運算中使用
+    - `NaN` = 非數值資料
+- 豐富的數學和統計函數
+    - `sqrt(value)` = 開根號
+    - `sum(numbers)` / `mean(numbers)` = 加總/平均數
+    - `var(numbers)` / `sd(numbers)` = 變異數 / 標準差
+    - `cor(A, B)` / `cov(A,B)` = A 與 B 兩串資料的相關係數 / 共變數
+    - `prcomp(matrix)` = 主成分分析
+    - `fa(matrix)` = 因素分析
+
+
+## Vectors and Lists 1/3
+- atomic vector: 數個同型態的資料
+```{r vectors, echo=TRUE, warning=FALSE}
+vector <- c(1,2,3,4,5)      # c()=concatenate
+print(vector)
+print(vector * vector)      # 元件相乘 = vector[1] * vector[1] + ...
+print(t(vector) %*% vector) # 向量乘法
+```
+
+
+## Vectors and Lists 2/3
+- list() = 特殊的 vector, 可包含不同型態的成員
+```{r lists, echo=TRUE, warning=FALSE}
+l <- list("id"=101, "name"="John Doe", "scores"=c(8, 7, 8, 3, 9))
+print(l)
+sum(l$scores)    # = sum(l[[3]])
+```
+
+## Vectors and Lists 3/3
+- 資料型態轉換
+```{r coercion, echo=TRUE, warning=FALSE}
+x <- "0"
+as.numeric(x) 
+as.logical(x)
+as.complex(x)
+```
+
+
+## Matrices and Data Frames 1/3
+- ```matrix``` 包含同型態的資料, ```data.frame``` 可包含不同型態的資料
+- ```matrix(values, nrow = n, ncol = m)```
+```{r matrix, echo=TRUE, warning=FALSE}
+x <- c(1,2,3,4,5,6)               # x is a vector
+mx <- matrix(x, nrow=3, ncol=2)   # mx is a 3x2 matrix
+mx
+dim(mx)                           # get the dimension with dim()
+```
+
+
+## Matrices and Data Frames 2/3
+```{r matrix2, echo=TRUE, warning=FALSE}
+# initiate a vector
+x <-c(NA, 1, "cx", NA, 2, "dsa")
+class(x)
+# convert to matrix
+dim(x) <- c(3, 2)
+class(x)
+```
+
+
+## Matrices and Data Frames 3/3
+- ```data.frame``` 可包含不同型態的資料
+```{r dataframe, echo=TRUE, warning=FALSE}
+df <- data.frame("id"=101:105, "name"=c("Alex","Bob","Carl","Dan","Eve"))
+df
+df$name
+```
+
+## Factors
+- ```factor```: 類別資料
+```{r factors, echo=TRUE, warning=FALSE}
+df$name
+as.numeric(df$name)
+levels(df$name)
+```
+- 在分析時要確認```character```跟```factor```的差異.
+- ```data1 <- read.csv("test01.csv", header = F, encoding="UTF-8", stringsAsFactors=F)```
+
+## Arrays
+- ```array(data, dim, dimnames)``` 多維度資料
+```{r arrays, echo=TRUE, warning=FALSE}
+x <- 1:8
+array(x, c(2,2,2))
+```
+
+## Missing Values
+- ```NaN``` or ```NA``` = missing values
+- ```NaN``` = undefined mathematical operations
+- ```NA``` = any value not available or missing in the statistical sense
+    - any operations with ```NA``` results in ```NA```
+    - ```NA``` can have different classes potentially (integer, character, etc)
+    - Note: ```NaN``` is an ```NA``` value, but ```NA``` is not ```NaN```
+- ```is.na()```, ```is.nan()``` = use to test if each element of the vector is ```NA``` and ```NaN```
+
+- ```sum(my_na)``` = sum of a logical vector (```TRUE``` = 1 and ```FALSE``` = 0) is effectively the number of ```TRUE```s
+
+## Removing NA Values
+- ```is.na()``` = creates logical vector where T is where value exists, F is NA
+    - subsetting with the above result can return only the non NA elements
+- ```complete.cases(obj1, obj2)``` = creates logical vector where ```TRUE``` is where both values exist, and ```FALSE``` is where any is NA
+    - can be used on data frames as well
+    - ```complete.cases(data.frame)``` = creates logical vectors indicating which observation/row is good
+    - ```data.frame[logicalVector, ]``` = returns all observations with complete data
+
+## Imputing Missing Values
+- replacing missing values with estimates (can be averages from all other data with the similar conditions)
+```{r imputation10, echo=TRUE, warning=FALSE}
+x <- c(1,2,3,NA,4,5)
+x
+is.na(x)
+x[is.na(x)] <- 0
+x
+```
+
+## Sequence of Numbers
+```{r sequence, echo=TRUE, warning=FALSE}
+1:10    # creates a sequence of numbers from first number to second number 
+seq(1, 10, by=2)
+rep(0, times=10)
+```
+
+## Subsetting
+- R uses *one based index* –> starts counting at 1
+- ```[]``` = 用來指定`vector`裡的成員，也可以同時指定多個成員，例如： ```[1:2]```
+- ```[[]]``` = 用來指定`list / data.frame`裡的成員
+- ```$``` = 用來指定`list / data.frame`裡有`name`的成員
+
+## Indexing 1/2
+- ```data[x, y, ...]``` can be used to index a specific element in a data collection ( array, matrix, or data.frame)
+```{r indexing1, echo=TRUE, warning=FALSE}
+x <- array(1:8, c(4,2))
+x
+x[1,2]
+```
+
+## Indexing 2/2
+- Use "sapce" to indicate "every element" in the data collection.
+```{r indexing2, echo=TRUE, warning=FALSE}
+x <- array(1:8, c(4,2))
+x
+x[2:3,]
+```
+
+
+# 學寫程式沒有捷徑，just do it!
+Quiz Time
+
+
+## Quiz 1
+- 在命令列輸入 2**4，會得到：
+    1. 2
+    2. 4
+    3. 16
+    4. 32
+
+
+## Quiz 2
+- 要從 data frame test1 裡挑選前兩欄，應該用以下哪個指令：
+    1. test1[1,2]
+    2. test1[c(1,2)]
+    3. test1[,c(1,2)]
+    4. test1[c(1,2),]
+
+
+## Quiz 3
+- 在命令列輸入 ```2+NA```，會得到：
+    1. ```NA```
+    2. ```NULL```
+    3. 2
+    4. 0
+
+
