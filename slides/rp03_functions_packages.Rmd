@@ -187,3 +187,81 @@ function (..., sep = " ", collapse = NULL)
 [1] "a b :"
 ```
 
+
+## R 套件管理
+R 的系統設計
+
+- 主要分成兩大部分：
+    - R 的基本核心（R-base）
+    - 其他
+
+- 各種功能被分散在眾多「套件」之中（packages）
+    - *base R** 包含核心功能與基本函數
+    - 基本安裝也包含 `util`, `stats`, `datasets` 等套件
+    - 依據應用領域的不同，會有不同的推薦套件 
+    - 在 CRAN 有登記的套件超過 5000 種以上
+
+
+## 套件安裝
+
+- 在 Rstudio 透過圖形介面安裝套件
+- 透過 console command 安裝
+```{r pkginst, echo = TRUE, cache=TRUE}
+install.packages("ggplot2")
+```
+
+
+## 套件版本
+
+- `installed.packages()`指令可以顯示已經安裝的套件
+```r
+           Package      LibPath                          Version  
+base       "base"       "C:/PROGRA~1/R/R-27~1.1/library" "2.7.1"  
+boot       "boot"       "C:/PROGRA~1/R/R-27~1.1/library" "1.2-33" 
+class      "class"      "C:/PROGRA~1/R/R-27~1.1/library" "7.2-42" 
+cluster    "cluster"    "C:/PROGRA~1/R/R-27~1.1/library" "1.11.11"
+codetools  "codetools"  "C:/PROGRA~1/R/R-27~1.1/library" "0.2-1"  
+datasets   "datasets"   "C:/PROGRA~1/R/R-27~1.1/library" "2.7.1"  
+foreign    "foreign"    "C:/PROGRA~1/R/R-27~1.1/library" "0.8-26" 
+```
+- 升級新版本的 R 有時需要重新安裝套件
+
+
+
+## 常用套件介紹
+2015年上半年的資料，最受歡迎的 R 套件：
+
+1. `Rcpp` 提供與 C++ 的整合，提昇計算效率。
+2. `ggplot2` 是最受歡迎的進階繪圖套件，背後有 Grammar of Graphics 這個理論基礎。
+3. `stringr` 提供了文字資料處理的常用函數。
+4. `plyr` 為資料的分割、合併與會整提供了豐富的工具。
+5. `digest` 提供為資料加密的功能。
+
+
+## 想用特定的分析方法分析資料
+例如，我想用階層線性回歸（r hierarchical linear model）
+
+- [Google](https://www.google.com.tw/webhp?sourceid=chrome-instant&ion=1&espv=2&ie=UTF-8#q=r%20hierarchical%20linear%20model) 是你的好幫手
+    - Hierarchical linear models and lmer | R-bloggers
+    - Hierarchical Linear Model | R Tutorial
+    - Hierarchical Linear Regression - R Tutorial Series
+
+- 通常你會在這些地方找到答案：
+    - [CRAN](https://cran.r-project.org/) (The **C**omprehensive **R** **A**rchive **N**etwork)
+    - [R-blogger](https://www.r-bloggers.com/)
+    - [Stackoverflow](http://stackoverflow.com/)
+
+
+
+## 套件新聞
+R 現在已經是個很大的社群，隨時有新的套件和應用發佈。
+
+[*The R journal*](https://journal.r-project.org/) 是個線上期刊，半年一期，有很多基於特定套件做某種分析的文章，可以理解套件的特性與使用情境。例如：
+
+- [Maps, Coordinate Reference Systems and Visualising Geographic Data with mapmisc](https://journal.r-project.org/archive/2016-1/brown.pdf)  by Patrick Brown
+
+[*R-blogger*](https://www.r-bloggers.com/) 則是比較新聞性的網站，除了社群動態之外，也有很多的教學文章，例如：
+
+- [Get air quality data for the United Kingdom using the rdefra package](https://www.r-bloggers.com/get-air-quality-data-for-the-united-kingdom-using-the-rdefra-package/) by Claudia Vitolo
+
+
