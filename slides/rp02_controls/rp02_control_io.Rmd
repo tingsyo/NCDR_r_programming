@@ -2,7 +2,9 @@
 title: 'Control Structures and Data I/O'
 author: "Ting-Shuo Yo"
 date: "October 7, 2016"
-output: ioslides_presentation
+output: 
+  ioslides_presentation:
+    widescreen: true
 ---
 
 ```{r setup, include=FALSE}
@@ -361,7 +363,7 @@ x <- readLines(con)
 ## 解答 1
 請讀取 `data_quiz_1.csv`， 請問資料有幾欄？欄位名稱是什麼？
 ```{r quiz0201, echo=TRUE, warning=FALSE}
-data <- read.csv("../data_quiz_1.csv")
+data <- read.csv("../../data_quiz_1.csv")
 dim(data)
 names(data)
 ```
