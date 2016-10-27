@@ -1,7 +1,7 @@
 ---
 title: 'R: Getting and Cleaning Data'
 author: "Ting-Shuo Yo"
-date: "October 9, 2016"
+date: "October 28, 2016"
 output: 
   ioslides_presentation:
     widescreen: true
@@ -12,29 +12,23 @@ knitr::opts_chunk$set(echo = FALSE)
 ```
 
 
-## About this course
+## 關於本課程
 
-* This course covers the basic ideas behind getting data ready for analysis
-  * Finding and extracting raw data
-  * Tidy data principles and how to make data tidy
-  * Practical implementation through a range of R packages
-* What this course depends on
-  * The Data Scientist's Toolbox
-  * R Programming
-* What would be useful
-  * Exploratory analysis
-  * Reporting Data and Reproducible Research
+* 這段課程的主題是「如何準備好分析要用的資料」，包含以下概念：
+  * 尋找與擷取「原始資料」(raw data)
+  * 「整齊資料」(Tidy data) 的原則，以及如何讓資料整齊
+  * 相關的 R 套件
+  * 實際案例練習
 
----
 
-## What you wish data looked like
+## 你期待資料的樣子
 
 <img class=center src=figures/excel.png height=450>
 
 
----
 
-## What does data really look like? 
+
+## 資料實際上的長相
 
 <img class=center src=figures/fastq.png height=450/>
 
@@ -42,18 +36,18 @@ knitr::opts_chunk$set(echo = FALSE)
 [http://brianknaus.com/software/srtoolbox/s_4_1_sequence80.txt](http://brianknaus.com/software/srtoolbox/s_4_1_sequence80.txt)
 
 
---- 
 
-## What does data really look like? 
+
+## 資料實際上的長相 
 
 <img class=center src=figures/twitter.png height= 450/>
 
 
 [https://dev.twitter.com/docs/api/1/get/blocks/blocking](https://dev.twitter.com/docs/api/1/get/blocks/blocking)
 
----
 
-## What does data really look like?
+
+## 資料實際上的長相
 
 
 <img class=center src=figures/medicalrecord.png height=400/>
@@ -62,9 +56,9 @@ knitr::opts_chunk$set(echo = FALSE)
 [http://blue-button.github.com/challenge/](http://blue-button.github.com/challenge/)
 
 
----
 
-## Where is data?
+
+## 資料在哪裡？
 
 <img class=center src=figures/databases.png height=400/>
 
@@ -72,29 +66,99 @@ knitr::opts_chunk$set(echo = FALSE)
 [http://rickosborne.org/blog/2010/02/infographic-migrating-from-sql-to-mapreduce-with-mongodb/](http://rickosborne.org/blog/2010/02/infographic-migrating-from-sql-to-mapreduce-with-mongodb/)
 
 
----
 
-## Where is data?
+
+## 資料在哪裡？
 
 <img class=center src=figures/twitter.png height= 450/>
 
 [https://dev.twitter.com/docs/api/1/get/blocks/blocking](https://dev.twitter.com/docs/api/1/get/blocks/blocking)
 
 
----
-
-## Where is data?
-
-<img class=center src=figures/baltimore.png height= 450/>
-
-[https://data.baltimorecity.gov/](https://data.baltimorecity.gov/)
 
 
----
+## 資料在哪裡？
 
-## The goal of this course
+<img class=center src=figures/data_gov_tw.jpg height= 450/>
+
+[http://data.gov.tw//](http://data.gov.tw//)
+
+
+
+
+## 課程目標
 
 </br></br>
 
-<center><rt>Raw data -> Processing script -> tidy data</rt> -> data analysis -> data communication </center>
+<center><rt>**原始資料** -> **資料處理** -> **整齊資料**</rt> -> 資料分析 -> 資料溝通 </center>
+
+
+-----
+
+# 原始資料與整齊資料
+
+
+## 資料的定義
+
+<q>資料是以數值的方式呈現，用來描述特定對象的性質或數量</q>
+<q>Data are values of qualitative or quantitative variables, belonging to a set of items.</q>
+
+[http://en.wikipedia.org/wiki/Data](http://en.wikipedia.org/wiki/Data)
+
+
+
+## 資料的定義
+<q>Data are values of qualitative or quantitative variables, belonging to a <redtext>set of items</redtext>.</q>
+
+[http://en.wikipedia.org/wiki/Data](http://en.wikipedia.org/wiki/Data)
+
+__Set of items__: Sometimes called the population; the set of objects you are interested in
+
+
+
+## 資料的定義
+<q>Data are values of qualitative or quantitative <redtext>variables</redtext>, belonging to a set of items.</q>
+
+[http://en.wikipedia.org/wiki/Data](http://en.wikipedia.org/wiki/Data)
+
+__Variables__: A measurement or characteristic of an item.
+
+
+
+## 資料的定義
+<q>Data are values of <redtext>qualitative</redtext> or <redtext>quantitative</redtext> variables, belonging to a set of items.</q>
+
+[http://en.wikipedia.org/wiki/Data](http://en.wikipedia.org/wiki/Data)
+
+
+__Qualitative__: Country of origin, sex, treatment
+
+__Quantitative__: Height, weight, blood pressure
+
+
+
+## 原始資料與整齊資料
+
+__原始資料__
+
+* 資料的原始型態
+* 通常很難直接拿來分析
+* 資料分析包括「清理與處理」
+* 原始資料可能只需要處理一次
+
+[http://en.wikipedia.org/wiki/Raw_data](http://en.wikipedia.org/wiki/Raw_data)
+
+
+## 原始資料與整齊資料
+
+__整齊資料__
+
+* 可以直接用於分析的資料
+* 處理的步驟可能包括合併、分割、轉換等等
+* 資料的處理可能需要符合固定的標準
+* 資料處理的每一道程序最好都記錄下來
+
+[http://en.wikipedia.org/wiki/Computer_data_processing](http://en.wikipedia.org/wiki/Computer_data_processing)
+
+
 

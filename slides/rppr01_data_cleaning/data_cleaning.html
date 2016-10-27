@@ -10,6 +10,7 @@
 
 
 
+  <meta name="date" content="2016-10-28" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -88,90 +89,131 @@
       <h1 data-config-title><!-- populated from slide_config.json --></h1>
       <h2 data-config-subtitle><!-- populated from slide_config.json --></h2>
       <p data-config-presenter><!-- populated from slide_config.json --></p>
-            <p style="margin-top: 6px; margin-left: -2px;">October 9, 2016</p>
+            <p style="margin-top: 6px; margin-left: -2px;">October 28, 2016</p>
           </hgroup>
   </slide>
 
-<slide class=''><hgroup><h2>About this course</h2></hgroup><article  id="about-this-course">
+<slide class=''><hgroup><h2>關於本課程</h2></hgroup><article >
 
 <ul>
-<li>This course covers the basic ideas behind getting data ready for analysis</li>
-<li>Finding and extracting raw data</li>
-<li>Tidy data principles and how to make data tidy</li>
-<li>Practical implementation through a range of R packages</li>
-<li>What this course depends on</li>
-<li>The Data Scientist&#39;s Toolbox</li>
-<li>R Programming</li>
-<li>What would be useful</li>
-<li>Exploratory analysis</li>
-<li>Reporting Data and Reproducible Research</li>
+<li>這段課程的主題是「如何準備好分析要用的資料」，包含以下概念：</li>
+<li>尋找與擷取「原始資料」(raw data)</li>
+<li>「整齊資料」(Tidy data) 的原則，以及如何讓資料整齊</li>
+<li>相關的 R 套件</li>
+<li>實際案例練習</li>
 </ul>
 
-</article></slide><slide class=''><hgroup><h2></h2></hgroup><article >
-
-</article></slide><slide class=''><hgroup><h2>What you wish data looked like</h2></hgroup><article  id="what-you-wish-data-looked-like">
+</article></slide><slide class=''><hgroup><h2>你期待資料的樣子</h2></hgroup><article >
 
 <p><img class=center src=figures/excel.png height=450></p>
 
-</article></slide><slide class=''><hgroup><h2></h2></hgroup><article >
-
-</article></slide><slide class=''><hgroup><h2>What does data really look like?</h2></hgroup><article  id="what-does-data-really-look-like">
+</article></slide><slide class=''><hgroup><h2>資料實際上的長相</h2></hgroup><article >
 
 <p><img class=center src=figures/fastq.png height=450/></p>
 
 <p><a href='http://brianknaus.com/software/srtoolbox/s_4_1_sequence80.txt' title=''>http://brianknaus.com/software/srtoolbox/s_4_1_sequence80.txt</a></p>
 
-</article></slide><slide class=''><hgroup><h2></h2></hgroup><article >
-
-</article></slide><slide class=''><hgroup><h2>What does data really look like?</h2></hgroup><article  id="what-does-data-really-look-like-1">
+</article></slide><slide class=''><hgroup><h2>資料實際上的長相</h2></hgroup><article  id="-1">
 
 <p><img class=center src=figures/twitter.png height= 450/></p>
 
 <p><a href='https://dev.twitter.com/docs/api/1/get/blocks/blocking' title=''>https://dev.twitter.com/docs/api/1/get/blocks/blocking</a></p>
 
-</article></slide><slide class=''><hgroup><h2></h2></hgroup><article >
-
-</article></slide><slide class=''><hgroup><h2>What does data really look like?</h2></hgroup><article  id="what-does-data-really-look-like-2">
+</article></slide><slide class=''><hgroup><h2>資料實際上的長相</h2></hgroup><article  id="-2">
 
 <p><img class=center src=figures/medicalrecord.png height=400/></p>
 
 <p><a href='http://blue-button.github.com/challenge/' title=''>http://blue-button.github.com/challenge/</a></p>
 
-</article></slide><slide class=''><hgroup><h2></h2></hgroup><article >
-
-</article></slide><slide class=''><hgroup><h2>Where is data?</h2></hgroup><article  id="where-is-data">
+</article></slide><slide class=''><hgroup><h2>資料在哪裡？</h2></hgroup><article >
 
 <p><img class=center src=figures/databases.png height=400/></p>
 
 <p><a href='http://rickosborne.org/blog/2010/02/infographic-migrating-from-sql-to-mapreduce-with-mongodb/' title=''>http://rickosborne.org/blog/2010/02/infographic-migrating-from-sql-to-mapreduce-with-mongodb/</a></p>
 
-</article></slide><slide class=''><hgroup><h2></h2></hgroup><article >
-
-</article></slide><slide class=''><hgroup><h2>Where is data?</h2></hgroup><article  id="where-is-data-1">
+</article></slide><slide class=''><hgroup><h2>資料在哪裡？</h2></hgroup><article  id="-1">
 
 <p><img class=center src=figures/twitter.png height= 450/></p>
 
 <p><a href='https://dev.twitter.com/docs/api/1/get/blocks/blocking' title=''>https://dev.twitter.com/docs/api/1/get/blocks/blocking</a></p>
 
-</article></slide><slide class=''><hgroup><h2></h2></hgroup><article >
+</article></slide><slide class=''><hgroup><h2>資料在哪裡？</h2></hgroup><article  id="-2">
 
-</article></slide><slide class=''><hgroup><h2>Where is data?</h2></hgroup><article  id="where-is-data-2">
+<p><img class=center src=figures/data_gov_tw.jpg height= 450/></p>
 
-<p><img class=center src=figures/baltimore.png height= 450/></p>
+<p><a href='http://data.gov.tw//' title=''>http://data.gov.tw//</a></p>
 
-<p><a href='https://data.baltimorecity.gov/' title=''>https://data.baltimorecity.gov/</a></p>
-
-</article></slide><slide class=''><hgroup><h2></h2></hgroup><article >
-
-</article></slide><slide class=''><hgroup><h2>The goal of this course</h2></hgroup><article  id="the-goal-of-this-course">
+</article></slide><slide class=''><hgroup><h2>課程目標</h2></hgroup><article >
 
 <p></br></br></p>
 
 <center>
 
-<rt>Raw data -&gt; Processing script -&gt; tidy data</rt> -&gt; data analysis -&gt; data communication
+<rt><strong>原始資料</strong> -&gt; <strong>資料處理</strong> -&gt; <strong>整齊資料</strong></rt> -&gt; 資料分析 -&gt; 資料溝通
 
-</center></article></slide>
+</center>
+
+</article></slide><slide class=''><hgroup><h2></h2></hgroup><article >
+
+</article></slide><slide class='segue dark nobackground'><hgroup class = 'auto-fadein'><h2>原始資料與整齊資料</h2></hgroup><article >
+
+</article></slide><slide class=''><hgroup><h2>資料的定義</h2></hgroup><article >
+
+<p><q>資料是以數值的方式呈現，用來描述特定對象的性質或數量</q> <q>Data are values of qualitative or quantitative variables, belonging to a set of items.</q></p>
+
+<p><a href='http://en.wikipedia.org/wiki/Data' title=''>http://en.wikipedia.org/wiki/Data</a></p>
+
+</article></slide><slide class=''><hgroup><h2>資料的定義</h2></hgroup><article  id="-1">
+
+<p><q>Data are values of qualitative or quantitative variables, belonging to a <redtext>set of items</redtext>.</q></p>
+
+<p><a href='http://en.wikipedia.org/wiki/Data' title=''>http://en.wikipedia.org/wiki/Data</a></p>
+
+<p><strong>Set of items</strong>: Sometimes called the population; the set of objects you are interested in</p>
+
+</article></slide><slide class=''><hgroup><h2>資料的定義</h2></hgroup><article  id="-2">
+
+<p><q>Data are values of qualitative or quantitative <redtext>variables</redtext>, belonging to a set of items.</q></p>
+
+<p><a href='http://en.wikipedia.org/wiki/Data' title=''>http://en.wikipedia.org/wiki/Data</a></p>
+
+<p><strong>Variables</strong>: A measurement or characteristic of an item.</p>
+
+</article></slide><slide class=''><hgroup><h2>資料的定義</h2></hgroup><article  id="-3">
+
+<p><q>Data are values of <redtext>qualitative</redtext> or <redtext>quantitative</redtext> variables, belonging to a set of items.</q></p>
+
+<p><a href='http://en.wikipedia.org/wiki/Data' title=''>http://en.wikipedia.org/wiki/Data</a></p>
+
+<p><strong>Qualitative</strong>: Country of origin, sex, treatment</p>
+
+<p><strong>Quantitative</strong>: Height, weight, blood pressure</p>
+
+</article></slide><slide class=''><hgroup><h2>原始資料與整齊資料</h2></hgroup><article  id="-1">
+
+<p><strong>原始資料</strong></p>
+
+<ul>
+<li>資料的原始型態</li>
+<li>通常很難直接拿來分析</li>
+<li>資料分析包括「清理與處理」</li>
+<li>原始資料可能只需要處理一次</li>
+</ul>
+
+<p><a href='http://en.wikipedia.org/wiki/Raw_data' title=''>http://en.wikipedia.org/wiki/Raw_data</a></p>
+
+</article></slide><slide class=''><hgroup><h2>原始資料與整齊資料</h2></hgroup><article  id="-2">
+
+<p><strong>整齊資料</strong></p>
+
+<ul>
+<li>可以直接用於分析的資料</li>
+<li>處理的步驟可能包括合併、分割、轉換等等</li>
+<li>資料的處理可能需要符合固定的標準</li>
+<li>資料處理的每一道程序最好都記錄下來</li>
+</ul>
+
+<p><a href='http://en.wikipedia.org/wiki/Computer_data_processing' title=''>http://en.wikipedia.org/wiki/Computer_data_processing</a></p></article></slide>
 
 
   <slide class="backdrop"></slide>
