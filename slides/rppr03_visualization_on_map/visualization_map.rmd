@@ -1,0 +1,22 @@
+---
+title: 'R: Visualization on Maps'
+author: "Ting-Shuo Yo"
+date: "November 18, 2016"
+output: 
+  ioslides_presentation:
+    widescreen: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## 關於本課程
+
+* 這段課程的主題是「如何在地圖上呈現資料」，包含以下概念：
+  * 基本繪圖原理
+  * 相關的 R 套件
+  * 實際案例練習
+    * 地點標示
+    * 事件密度
+    * 空間內差

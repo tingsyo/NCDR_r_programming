@@ -1,0 +1,21 @@
+---
+title: 'R: Exploratory Data Analysis'
+author: "Ting-Shuo Yo"
+date: "November 11, 2016"
+output: 
+  ioslides_presentation:
+    widescreen: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## 關於本課程
+
+* 這段課程的主題是「拿到一比筆資料，但對問題所知不多的時候，可以做些什麼」，包含以下概念：
+  * 資料的摘要
+  * 資料的時間和空間結構
+  * 資料變項間的相關性
+  * 實際案例練習
+
