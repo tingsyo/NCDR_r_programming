@@ -76,7 +76,6 @@
   </style>
 
 
-
 </head>
 
 <body style="opacity: 0">
@@ -155,11 +154,13 @@
 
 </article></slide><slide class=''><hgroup><h2></h2></hgroup><article >
 
-</article></slide><slide class='segue dark nobackground'><hgroup class = 'auto-fadein'><h2>原始資料與整齊資料</h2></hgroup><article >
+</article></slide><slide class='segue dark nobackground level1'><hgroup class = 'auto-fadein'><h2>原始資料與整齊資料</h2></hgroup><article >
 
 </article></slide><slide class=''><hgroup><h2>資料的定義</h2></hgroup><article >
 
-<p><q>資料是以數值的方式呈現，用來描述特定對象的性質或數量</q> <q>Data are values of qualitative or quantitative variables, belonging to a set of items.</q></p>
+<p><q>資料是以數值的方式呈現，用來描述特定對象的性質或數量</q></p>
+
+<p><em>Data are values of qualitative or quantitative variables, belonging to a set of items.</em></p>
 
 <p><a href='http://en.wikipedia.org/wiki/Data' title=''>http://en.wikipedia.org/wiki/Data</a></p>
 
@@ -213,7 +214,982 @@
 <li>資料處理的每一道程序最好都記錄下來</li>
 </ul>
 
-<p><a href='http://en.wikipedia.org/wiki/Computer_data_processing' title=''>http://en.wikipedia.org/wiki/Computer_data_processing</a></p></article></slide>
+<p><a href='http://en.wikipedia.org/wiki/Computer_data_processing' title=''>http://en.wikipedia.org/wiki/Computer_data_processing</a></p>
+
+</article></slide><slide class=''><hgroup><h2>常用的資料整理技巧</h2></hgroup><article >
+
+<ul>
+<li>資料分割與排序（Subseting and sorting）</li>
+<li>資料摘要（Summarizing）</li>
+<li>增加新變項（Creating new variables）</li>
+<li>資料重整（Reshaping data）</li>
+<li>資料合併（Merging data）</li>
+</ul>
+
+</article></slide><slide class=''><hgroup><h2>使用到的套件</h2></hgroup><article >
+
+<ul>
+<li>reshape2</li>
+<li>plyr / dplr</li>
+<li>Hmisc</li>
+</ul>
+
+</article></slide><slide class=''><hgroup><h2>資料分割與排序（Subseting and sorting）</h2></hgroup><article  id="subseting-and-sorting">
+
+<pre class = 'prettyprint lang-r'>set.seed(13435)
+X &lt;- data.frame(&quot;var1&quot;=sample(1:5),&quot;var2&quot;=sample(6:10),&quot;var3&quot;=sample(11:15))
+X &lt;- X[sample(1:5),]; X$var2[c(1,3)] = NA
+X</pre>
+
+<pre >  var1 var2 var3
+1    2   NA   15
+4    1   10   11
+2    3   NA   12
+3    5    6   14
+5    4    9   13</pre>
+
+</article></slide><slide class=''><hgroup><h2>資料分割</h2></hgroup><article >
+
+<pre class = 'prettyprint lang-r'>X[,1]</pre>
+
+<pre >[1] 2 1 3 5 4</pre>
+
+<pre class = 'prettyprint lang-r'>X[,&quot;var1&quot;]</pre>
+
+<pre >[1] 2 1 3 5 4</pre>
+
+<pre class = 'prettyprint lang-r'>X[1:2,&quot;var2&quot;]</pre>
+
+<pre >[1] NA 10</pre>
+
+</article></slide><slide class=''><hgroup><h2>Logicals ands and ors</h2></hgroup><article  id="logicals-ands-and-ors">
+
+<pre class = 'prettyprint lang-r'>X[(X$var1 &lt;= 3 &amp; X$var3 &gt; 11),]</pre>
+
+<pre >  var1 var2 var3
+1    2   NA   15
+2    3   NA   12</pre>
+
+<pre class = 'prettyprint lang-r'>X[(X$var1 &lt;= 3 | X$var3 &gt; 15),]</pre>
+
+<pre >  var1 var2 var3
+1    2   NA   15
+4    1   10   11
+2    3   NA   12</pre>
+
+</article></slide><slide class=''><hgroup><h2>遺失值的處理（missing values）</h2></hgroup><article  id="missing-values">
+
+<pre class = 'prettyprint lang-r'>X[which(X$var2 &gt; 8),]</pre>
+
+<pre >  var1 var2 var3
+4    1   10   11
+5    4    9   13</pre>
+
+</article></slide><slide class=''><hgroup><h2>排序</h2></hgroup><article >
+
+<pre class = 'prettyprint lang-r'>sort(X$var1)</pre>
+
+<pre >[1] 1 2 3 4 5</pre>
+
+<pre class = 'prettyprint lang-r'>sort(X$var1,decreasing=TRUE)</pre>
+
+<pre >[1] 5 4 3 2 1</pre>
+
+<pre class = 'prettyprint lang-r'>sort(X$var2,na.last=TRUE)</pre>
+
+<pre >[1]  6  9 10 NA NA</pre>
+
+</article></slide><slide class=''><hgroup><h2>排序</h2></hgroup><article  id="-1">
+
+<pre class = 'prettyprint lang-r'>X[order(X$var1),]</pre>
+
+<pre >  var1 var2 var3
+4    1   10   11
+1    2   NA   15
+2    3   NA   12
+5    4    9   13
+3    5    6   14</pre>
+
+</article></slide><slide class=''><hgroup><h2>排序</h2></hgroup><article  id="-2">
+
+<pre class = 'prettyprint lang-r'>X[order(X$var1,X$var3),]</pre>
+
+<pre >  var1 var2 var3
+4    1   10   11
+1    2   NA   15
+2    3   NA   12
+5    4    9   13
+3    5    6   14</pre>
+
+</article></slide><slide class=''><hgroup><h2>用 plyr 排序</h2></hgroup><article  id="-plyr-">
+
+<pre class = 'prettyprint lang-r'>require(plyr)
+arrange(X,var1)</pre>
+
+<pre >  var1 var2 var3
+1    1   10   11
+2    2   NA   15
+3    3   NA   12
+4    4    9   13
+5    5    6   14</pre>
+
+<pre class = 'prettyprint lang-r'>arrange(X,desc(var1))</pre>
+
+<pre >  var1 var2 var3
+1    5    6   14
+2    4    9   13
+3    3   NA   12
+4    2   NA   15
+5    1   10   11</pre>
+
+</article></slide><slide class=''><hgroup><h2>新增資料欄位</h2></hgroup><article >
+
+<pre class = 'prettyprint lang-r'>X$var4 &lt;- rnorm(5)
+X</pre>
+
+<pre >  var1 var2 var3       var4
+1    2   NA   15  0.1875960
+4    1   10   11  1.7869764
+2    3   NA   12  0.4966936
+3    5    6   14  0.0631830
+5    4    9   13 -0.5361329</pre>
+
+</article></slide><slide class=''><hgroup><h2>新增資料欄位</h2></hgroup><article  id="-1">
+
+<pre class = 'prettyprint lang-r'>Y &lt;- cbind(X,rnorm(5))
+Y</pre>
+
+<pre >  var1 var2 var3       var4    rnorm(5)
+1    2   NA   15  0.1875960  0.62578490
+4    1   10   11  1.7869764 -2.45083750
+2    3   NA   12  0.4966936  0.08909424
+3    5    6   14  0.0631830  0.47838570
+5    4    9   13 -0.5361329  1.00053336</pre>
+
+</article></slide><slide class=''><hgroup><h2>資料摘要（Summarizing）：範例資料</h2></hgroup><article  id="summarizing">
+
+<p><img class=center src="./figures/restaurants.png" height=500 /></p>
+
+<p><a href='https://data.baltimorecity.gov/Community/Restaurants/k5ry-ef3g' title=''>https://data.baltimorecity.gov/Community/Restaurants/k5ry-ef3g</a></p>
+
+</article></slide><slide class=''><hgroup><h2>資料摘要（Summarizing）：取得資料</h2></hgroup><article  id="summarizing">
+
+<pre class = 'prettyprint lang-r'>if(!file.exists(&quot;./data&quot;)){dir.create(&quot;./data&quot;)}
+fileUrl &lt;- &quot;https://data.baltimorecity.gov/api/views/k5ry-ef3g/rows.csv?accessType=DOWNLOAD&quot;
+download.file(fileUrl,destfile=&quot;./data/restaurants.csv&quot;,method=&quot;curl&quot;)
+restData &lt;- read.csv(&quot;./data/restaurants.csv&quot;)</pre>
+
+</article></slide><slide class=''><hgroup><h2>看看資料的頭跟尾</h2></hgroup><article >
+
+<pre class = 'prettyprint lang-r'>head(restData,n=3)</pre>
+
+<pre >   name zipCode neighborhood councilDistrict policeDistrict
+1   410   21206    Frankford               2   NORTHEASTERN
+2  1919   21231  Fells Point               1   SOUTHEASTERN
+3 SAUTE   21224       Canton               1   SOUTHEASTERN
+                         Location.1
+1 4509 BELAIR ROAD\nBaltimore, MD\n
+2    1919 FLEET ST\nBaltimore, MD\n
+3   2844 HUDSON ST\nBaltimore, MD\n</pre>
+
+<pre class = 'prettyprint lang-r'>tail(restData,n=3)</pre>
+
+<pre >                   name zipCode  neighborhood councilDistrict
+1325 ZINK&#39;S CAF\302\220   21213 Belair-Edison              13
+1326       ZISSIMOS BAR   21211       Hampden               7
+1327             ZORBAS   21224     Greektown               2
+     policeDistrict                         Location.1
+1325   NORTHEASTERN 3300 LAWNVIEW AVE\nBaltimore, MD\n
+1326       NORTHERN      1023 36TH ST\nBaltimore, MD\n
+1327   SOUTHEASTERN  4710 EASTERN Ave\nBaltimore, MD\n</pre>
+
+</article></slide><slide class=''><hgroup><h2>做摘要</h2></hgroup><article >
+
+<pre class = 'prettyprint lang-r'>summary(restData)</pre>
+
+<pre >                           name         zipCode             neighborhood
+ MCDONALD&#39;S                  :   8   Min.   :-21226   Downtown    :128  
+ POPEYES FAMOUS FRIED CHICKEN:   7   1st Qu.: 21202   Fells Point : 91  
+ SUBWAY                      :   6   Median : 21218   Inner Harbor: 89  
+ KENTUCKY FRIED CHICKEN      :   5   Mean   : 21185   Canton      : 81  
+ BURGER KING                 :   4   3rd Qu.: 21226   Federal Hill: 42  
+ DUNKIN DONUTS               :   4   Max.   : 21287   Mount Vernon: 33  
+ (Other)                     :1293                    (Other)     :863  
+ councilDistrict       policeDistrict
+ Min.   : 1.000   SOUTHEASTERN:385   
+ 1st Qu.: 2.000   CENTRAL     :288   
+ Median : 9.000   SOUTHERN    :213   
+ Mean   : 7.191   NORTHERN    :157   
+ 3rd Qu.:11.000   NORTHEASTERN: 72   
+ Max.   :14.000   EASTERN     : 67   
+                  (Other)     :145   
+                          Location.1    
+ 1101 RUSSELL ST\nBaltimore, MD\n:   9  
+ 201 PRATT ST\nBaltimore, MD\n   :   8  
+ 2400 BOSTON ST\nBaltimore, MD\n :   8  
+ 300 LIGHT ST\nBaltimore, MD\n   :   5  
+ 300 CHARLES ST\nBaltimore, MD\n :   4  
+ 301 LIGHT ST\nBaltimore, MD\n   :   4  
+ (Other)                         :1289  </pre>
+
+</article></slide><slide class=''><hgroup><h2>詳細一點的摘要</h2></hgroup><article >
+
+<pre class = 'prettyprint lang-r'>str(restData)</pre>
+
+<pre >&#39;data.frame&#39;:   1327 obs. of  6 variables:
+ $ name           : Factor w/ 1277 levels &quot;#1 CHINESE KITCHEN&quot;,..: 9 3 992 1 2 4 5 6 7 8 ...
+ $ zipCode        : int  21206 21231 21224 21211 21223 21218 21205 21211 21205 21231 ...
+ $ neighborhood   : Factor w/ 173 levels &quot;Abell&quot;,&quot;Arlington&quot;,..: 53 52 18 66 104 33 98 133 98 157 ...
+ $ councilDistrict: int  2 1 1 14 9 14 13 7 13 1 ...
+ $ policeDistrict : Factor w/ 9 levels &quot;CENTRAL&quot;,&quot;EASTERN&quot;,..: 3 6 6 4 8 3 6 4 6 6 ...
+ $ Location.1     : Factor w/ 1210 levels &quot;1 BIDDLE ST\nBaltimore, MD\n&quot;,..: 835 334 554 755 492 537 505 530 507 569 ...</pre>
+
+</article></slide><slide class=''><hgroup><h2>四分位數</h2></hgroup><article >
+
+<pre class = 'prettyprint lang-r'>quantile(restData$councilDistrict,na.rm=TRUE)</pre>
+
+<pre >  0%  25%  50%  75% 100% 
+   1    2    9   11   14 </pre>
+
+<pre class = 'prettyprint lang-r'>quantile(restData$councilDistrict,probs=c(0.5,0.75,0.9))</pre>
+
+<pre >50% 75% 90% 
+  9  11  12 </pre>
+
+</article></slide><slide class=''><hgroup><h2>用 table 做摘要</h2></hgroup><article  id="-table-">
+
+<pre class = 'prettyprint lang-r'>table(restData$zipCode,useNA=&quot;ifany&quot;)</pre>
+
+<pre >
+-21226  21201  21202  21205  21206  21207  21208  21209  21210  21211 
+     1    136    201     27     30      4      1      8     23     41 
+ 21212  21213  21214  21215  21216  21217  21218  21220  21222  21223 
+    28     31     17     54     10     32     69      1      7     56 
+ 21224  21225  21226  21227  21229  21230  21231  21234  21237  21239 
+   199     19     18      4     13    156    127      7      1      3 
+ 21251  21287 
+     2      1 </pre>
+
+</article></slide><slide class=''><hgroup><h2>用 table 做摘要</h2></hgroup><article  id="-table--1">
+
+<pre class = 'prettyprint lang-r'>table(restData$councilDistrict,restData$zipCode)</pre>
+
+<pre >    
+     -21226 21201 21202 21205 21206 21207 21208 21209 21210 21211 21212
+  1       0     0    37     0     0     0     0     0     0     0     0
+  2       0     0     0     3    27     0     0     0     0     0     0
+  3       0     0     0     0     0     0     0     0     0     0     0
+  4       0     0     0     0     0     0     0     0     0     0    27
+  5       0     0     0     0     0     3     0     6     0     0     0
+  6       0     0     0     0     0     0     0     1    19     0     0
+  7       0     0     0     0     0     0     0     1     0    27     0
+  8       0     0     0     0     0     1     0     0     0     0     0
+  9       0     1     0     0     0     0     0     0     0     0     0
+  10      1     0     1     0     0     0     0     0     0     0     0
+  11      0   115   139     0     0     0     1     0     0     0     1
+  12      0    20    24     4     0     0     0     0     0     0     0
+  13      0     0     0    20     3     0     0     0     0     0     0
+  14      0     0     0     0     0     0     0     0     4    14     0
+    
+     21213 21214 21215 21216 21217 21218 21220 21222 21223 21224 21225
+  1      2     0     0     0     0     0     0     7     0   140     1
+  2      0     0     0     0     0     0     0     0     0    54     0
+  3      2    17     0     0     0     3     0     0     0     0     0
+  4      0     0     0     0     0     0     0     0     0     0     0
+  5      0     0    31     0     0     0     0     0     0     0     0
+  6      0     0    15     1     0     0     0     0     0     0     0
+  7      0     0     6     7    15     6     0     0     0     0     0
+  8      0     0     0     0     0     0     0     0     2     0     0
+  9      0     0     0     2     8     0     0     0    53     0     0
+  10     0     0     0     0     0     0     1     0     0     0    18
+  11     0     0     0     0     9     0     0     0     1     0     0
+  12    13     0     0     0     0    26     0     0     0     0     0
+  13    13     0     1     0     0     0     0     0     0     5     0
+  14     1     0     1     0     0    34     0     0     0     0     0
+    
+     21226 21227 21229 21230 21231 21234 21237 21239 21251 21287
+  1      0     0     0     1   124     0     0     0     0     0
+  2      0     0     0     0     0     0     1     0     0     0
+  3      0     1     0     0     0     7     0     0     2     0
+  4      0     0     0     0     0     0     0     3     0     0
+  5      0     0     0     0     0     0     0     0     0     0
+  6      0     0     0     0     0     0     0     0     0     0
+  7      0     0     0     0     0     0     0     0     0     0
+  8      0     2    13     0     0     0     0     0     0     0
+  9      0     0     0    11     0     0     0     0     0     0
+  10    18     0     0   133     0     0     0     0     0     0
+  11     0     0     0    11     0     0     0     0     0     0
+  12     0     0     0     0     2     0     0     0     0     0
+  13     0     1     0     0     1     0     0     0     0     1
+  14     0     0     0     0     0     0     0     0     0     0</pre>
+
+</article></slide><slide class=''><hgroup><h2>檢查遺失值</h2></hgroup><article >
+
+<pre class = 'prettyprint lang-r'>sum(is.na(restData$councilDistrict))</pre>
+
+<pre >[1] 0</pre>
+
+<pre class = 'prettyprint lang-r'>any(is.na(restData$councilDistrict))</pre>
+
+<pre >[1] FALSE</pre>
+
+<pre class = 'prettyprint lang-r'>all(restData$zipCode &gt; 0)</pre>
+
+<pre >[1] FALSE</pre>
+
+</article></slide><slide class=''><hgroup><h2>加總行與列</h2></hgroup><article >
+
+<pre class = 'prettyprint lang-r'>colSums(is.na(restData))</pre>
+
+<pre >           name         zipCode    neighborhood councilDistrict 
+              0               0               0               0 
+ policeDistrict      Location.1 
+              0               0 </pre>
+
+<pre class = 'prettyprint lang-r'>all(colSums(is.na(restData))==0)</pre>
+
+<pre >[1] TRUE</pre>
+
+</article></slide><slide class=''><hgroup><h2>尋找特定資料</h2></hgroup><article >
+
+<pre class = 'prettyprint lang-r'>table(restData$zipCode %in% c(&quot;21212&quot;))</pre>
+
+<pre >
+FALSE  TRUE 
+ 1299    28 </pre>
+
+<pre class = 'prettyprint lang-r'>table(restData$zipCode %in% c(&quot;21212&quot;,&quot;21213&quot;))</pre>
+
+<pre >
+FALSE  TRUE 
+ 1268    59 </pre>
+
+</article></slide><slide class=''><hgroup><h2>尋找特定資料</h2></hgroup><article  id="-1">
+
+<pre class = 'prettyprint lang-r'>restData[restData$zipCode %in% c(&quot;21212&quot;,&quot;21213&quot;),]</pre>
+
+<pre >                                     name zipCode
+29                      BAY ATLANTIC CLUB   21212
+39                            BERMUDA BAR   21213
+92                              ATWATER&#39;S   21212
+111            BALTIMORE ESTONIAN SOCIETY   21213
+187                              CAFE ZEN   21212
+220                   CERIELLO FINE FOODS   21212
+266    CLIFTON PARK GOLF COURSE SNACK BAR   21213
+276                CLUB HOUSE BAR &amp; GRILL   21213
+289                 CLUBHOUSE BAR &amp; GRILL   21213
+291                           COCKY LOU&#39;S   21213
+362       DREAM TAVERN, CARRIBEAN  U.S.A.   21213
+373                         DUNKIN DONUTS   21212
+383        EASTSIDE  SPORTS  SOCIAL  CLUB   21213
+417                      FIELDS OLD TRAIL   21212
+475                             GRAND CRU   21212
+545                           RANDY&#39;S BAR   21213
+604     MURPHY&#39;S NEIGHBORHOOD BAR &amp; GRILL   21212
+616                                NEOPOL   21212
+620             NEW CLUB THUNDERBIRD INC.   21213
+626                    NEW MAYFIELD, INC.   21213
+678                          IKAN SEAFOOD   21212
+711                          KAY-CEE CLUB   21212
+763                                LA&#39;RAE   21213
+777                  LEMONGRASS BALTIMORE   21213
+779                   LEN&#39;S SANDWICH SHOP   21213
+845                            MCDONALD&#39;S   21213
+852                            MCDONALD&#39;S   21212
+873                  NEW REX LIQUORS,INC.   21212
+895                             OK TAVERN   21213
+919                          PANERA BREAD   21212
+940                    PEIWEI ASIAN DINER   21212
+949                   PERGUSA ENTERPRISES   21212
+957               PHANTOM&#39;S BAR AND GRILL   21213
+976          POPEYES FAMOUS FRIED CHICKEN   21212
+994                         ROBBIE&#39;S NEST   21213
+1017                          RUTLAND BAR   21213
+1018                      RYAN&#39;S DAUGHTER   21212
+1022         saigon remembered restaurant   21212
+1053                SHIRLEY&#39;S  HONEY HOLE   21213
+1120                     STEEPLE CHASE II   21213
+1122                               SUBWAY   21213
+1153                              TAM-TAM   21212
+1155                                TASTE   21212
+1159                         TAYLORS EAST   21213
+1186                THE EDGE BAR &amp; LOUNGE   21213
+1187 THE EDGE BAR &amp; LOUNGE - KITCHEN AREA   21213
+1198               THE HOLLOW BAR &amp; GRILL   21212
+1209             THE NEW BUCKETT&#39;S LOUNGE   21213
+1232                         THREE  ACE&#39;S   21213
+1246                 TORAIN&#39;S  HIDE-A-WAY   21213
+1259                    TSUNAMI BALTIMORE   21213
+1287                         VITO&#39;S PIZZA   21212
+1298 WENDY&#39;S OLD FASHIONED HAMBURGERS #96   21212
+1304                 WHITTEN&#39;S  (4502-04)   21213
+1312                          wozi lounge   21212
+1319           YETI RESTAURANT &amp; CARRYOUT   21212
+1320                     YORK CLUB TAVERN   21212
+1323            ZEN WEST ROADSIDE CANTINA   21212
+1325                   ZINK&#39;S CAF\302\220   21213
+                    neighborhood councilDistrict policeDistrict
+29                      Downtown              11        CENTRAL
+39                 Broadway East              12        EASTERN
+92     Chinquapin Park-Belvedere               4       NORTHERN
+111           South Clifton Park              12        EASTERN
+187                     Rosebank               4       NORTHERN
+220    Chinquapin Park-Belvedere               4       NORTHERN
+266                  Darley Park              14   NORTHEASTERN
+276  Orangeville Industrial Area              13        EASTERN
+289  Orangeville Industrial Area              13        EASTERN
+291                Broadway East              12        EASTERN
+362                Broadway East              13        EASTERN
+373                     Homeland               4       NORTHERN
+383                Broadway East              13        EASTERN
+417                   Mid-Govans               4       NORTHERN
+475    Chinquapin Park-Belvedere               4       NORTHERN
+545                Broadway East              12        EASTERN
+604                   Mid-Govans               4       NORTHERN
+616    Chinquapin Park-Belvedere               4       NORTHERN
+620                  Middle East              13        EASTERN
+626                Belair-Edison              13   NORTHEASTERN
+678    Chinquapin Park-Belvedere               4       NORTHERN
+711                     Homeland               4       NORTHERN
+763                       Oliver              12        EASTERN
+777                 Little Italy               1   SOUTHEASTERN
+779                Broadway East              12        EASTERN
+845           South Clifton Park              12        EASTERN
+852               Radnor-Winston               4       NORTHERN
+873                  Wilson Park               4       NORTHERN
+895                Biddle Street              13        EASTERN
+919                  Lake Walker               4       NORTHERN
+940                   Cedarcroft               4       NORTHERN
+949                     Rosebank               4       NORTHERN
+957                Belair-Edison               3   NORTHEASTERN
+976               Winston-Govans               4       NORTHERN
+994                Broadway East              12        EASTERN
+1017               Broadway East              12        EASTERN
+1018   Chinquapin Park-Belvedere               4       NORTHERN
+1022                  Mid-Govans               4       NORTHERN
+1053               Broadway East              13        EASTERN
+1120               Biddle Street              13        EASTERN
+1122                      Oliver              12        EASTERN
+1153                  Mid-Govans               4       NORTHERN
+1155                  Mid-Govans               4       NORTHERN
+1159                       Berea              13        EASTERN
+1186               Broadway East              12        EASTERN
+1187               Broadway East              12        EASTERN
+1198                    Rosebank               4       NORTHERN
+1209               Broadway East              13        EASTERN
+1232               Belair-Edison               3   NORTHEASTERN
+1246               Broadway East              12        EASTERN
+1259                Little Italy               1   SOUTHEASTERN
+1287                  Cedarcroft               4       NORTHERN
+1298                    Homeland               4       NORTHERN
+1304           Claremont-Freedom              13   NORTHEASTERN
+1312                    Guilford               4       NORTHERN
+1319                    Rosebank               4       NORTHERN
+1320                    Homeland               4       NORTHERN
+1323                    Rosebank               4       NORTHERN
+1325               Belair-Edison              13   NORTHEASTERN
+                               Location.1
+29        206 REDWOOD ST\nBaltimore, MD\n
+39        1801 NORTH AVE\nBaltimore, MD\n
+92     529 BELVEDERE AVE\nBaltimore, MD\n
+111       1932 BELAIR RD\nBaltimore, MD\n
+187    438 BELVEDERE AVE\nBaltimore, MD\n
+220    529 BELVEDERE AVE\nBaltimore, MD\n
+266        2701 ST LO DR\nBaltimore, MD\n
+276      4217 ERDMAN AVE\nBaltimore, MD\n
+289      4217 ERDMAN AVE\nBaltimore, MD\n
+291       2101 NORTH AVE\nBaltimore, MD\n
+362   2300 LAFAYETTE AVE\nBaltimore, MD\n
+373         5422 YORK RD\nBaltimore, MD\n
+383  1203 COLLINGTON AVE\nBaltimore, MD\n
+417         5723 YORK RD\nBaltimore, MD\n
+475    527 BELVEDERE AVE\nBaltimore, MD\n
+545       2135 NORTH AVE\nBaltimore, MD\n
+604         5847 YORK RD\nBaltimore, MD\n
+616    529 BELVEDERE AVE\nBaltimore, MD\n
+620        2201 CHASE ST\nBaltimore, MD\n
+626       3349 BELAIR RD\nBaltimore, MD\n
+678    529 BELVEDERE AVE\nBaltimore, MD\n
+711     201 HOMELAND AVE\nBaltimore, MD\n
+763      1000 HOFFMAN ST\nBaltimore, MD\n
+777     1300 BANK STREET\nBaltimore, MD\n
+779   1500 WASHINGTON ST\nBaltimore, MD\n
+845        2001 BROADWAY\nBaltimore, MD\n
+852         5100 YORK RD\nBaltimore, MD\n
+873         4637 YORK RD\nBaltimore, MD\n
+895       2301 BIDDLE ST\nBaltimore, MD\n
+919     6307 1 2 YORK RD\nBaltimore, MD\n
+940         6302 YORK RD\nBaltimore, MD\n
+949         5928 YORK RD\nBaltimore, MD\n
+957       3539 BELAIR RD\nBaltimore, MD\n
+976         5002 YORK RD\nBaltimore, MD\n
+994       2250 NORTH AVE\nBaltimore, MD\n
+1017    1508 RUTLAND AVE\nBaltimore, MD\n
+1018   600 BELVEDERE AVE\nBaltimore, MD\n
+1022        5857 york rd\nBaltimore, MD\n
+1053      2300 OLIVER ST\nBaltimore, MD\n
+1120       2401 CHASE ST\nBaltimore, MD\n
+1122      1400 NORTH AVE\nBaltimore, MD\n
+1153        5722 YORK RD\nBaltimore, MD\n
+1155   510 BELVEDERE AVE\nBaltimore, MD\n
+1159     1201 POTOMAC ST\nBaltimore, MD\n
+1186     2015 FEDERAL ST\nBaltimore, MD\n
+1187     2015 FEDERAL ST\nBaltimore, MD\n
+1198        5921 YORK RD\nBaltimore, MD\n
+1209     1432 CHESTER ST\nBaltimore, MD\n
+1232      3534 belair RD\nBaltimore, MD\n
+1246   1701 ELLSWORTH ST\nBaltimore, MD\n
+1259        1300 BANK ST\nBaltimore, MD\n
+1287        6304 YORK RD\nBaltimore, MD\n
+1298        5615 YORK RD\nBaltimore, MD\n
+1304     4502 ERDMAN AVE\nBaltimore, MD\n
+1312        4515 YORK RD\nBaltimore, MD\n
+1319        5926 YORK RD\nBaltimore, MD\n
+1320        5407 YORK RD\nBaltimore, MD\n
+1323        5916 YORK RD\nBaltimore, MD\n
+1325   3300 LAWNVIEW AVE\nBaltimore, MD\n</pre>
+
+</article></slide><slide class=''><hgroup><h2>交叉分析表：大學入學申請資料</h2></hgroup><article >
+
+<pre class = 'prettyprint lang-r'>data(UCBAdmissions)
+DF = as.data.frame(UCBAdmissions)
+summary(DF)</pre>
+
+<pre >      Admit       Gender   Dept       Freq      
+ Admitted:12   Male  :12   A:4   Min.   :  8.0  
+ Rejected:12   Female:12   B:4   1st Qu.: 80.0  
+                           C:4   Median :170.0  
+                           D:4   Mean   :188.6  
+                           E:4   3rd Qu.:302.5  
+                           F:4   Max.   :512.0  </pre>
+
+</article></slide><slide class=''><hgroup><h2>交叉分析表：性別/核准入學的頻率</h2></hgroup><article >
+
+<pre class = 'prettyprint lang-r'>xt &lt;- xtabs(Freq ~ Gender + Admit,data=DF)
+xt</pre>
+
+<pre >        Admit
+Gender   Admitted Rejected
+  Male       1198     1493
+  Female      557     1278</pre>
+
+</article></slide><slide class=''><hgroup><h2>Flat tables：羊毛紡織資料</h2></hgroup><article  id="flat-tables">
+
+<pre class = 'prettyprint lang-r'>warpbreaks$replicate &lt;- rep(1:9, len = 54)
+xt = xtabs(breaks ~.,data=warpbreaks)
+xt</pre>
+
+<pre >, , replicate = 1
+
+    tension
+wool  L  M  H
+   A 26 18 36
+   B 27 42 20
+
+, , replicate = 2
+
+    tension
+wool  L  M  H
+   A 30 21 21
+   B 14 26 21
+
+, , replicate = 3
+
+    tension
+wool  L  M  H
+   A 54 29 24
+   B 29 19 24
+
+, , replicate = 4
+
+    tension
+wool  L  M  H
+   A 25 17 18
+   B 19 16 17
+
+, , replicate = 5
+
+    tension
+wool  L  M  H
+   A 70 12 10
+   B 29 39 13
+
+, , replicate = 6
+
+    tension
+wool  L  M  H
+   A 52 18 43
+   B 31 28 15
+
+, , replicate = 7
+
+    tension
+wool  L  M  H
+   A 51 35 28
+   B 41 21 15
+
+, , replicate = 8
+
+    tension
+wool  L  M  H
+   A 26 30 15
+   B 20 39 16
+
+, , replicate = 9
+
+    tension
+wool  L  M  H
+   A 67 36 26
+   B 44 29 28</pre>
+
+</article></slide><slide class=''><hgroup><h2>Flat tables</h2></hgroup><article  id="flat-tables-1">
+
+<pre class = 'prettyprint lang-r'>ftable(xt)</pre>
+
+<pre >             replicate  1  2  3  4  5  6  7  8  9
+wool tension                                     
+A    L                 26 30 54 25 70 52 51 26 67
+     M                 18 21 29 17 12 18 35 30 36
+     H                 36 21 24 18 10 43 28 15 26
+B    L                 27 14 29 19 29 31 41 20 44
+     M                 42 26 19 16 39 28 21 39 29
+     H                 20 21 24 17 13 15 15 16 28</pre>
+
+</article></slide><slide class=''><hgroup><h2>了解資料的大小</h2></hgroup><article >
+
+<pre class = 'prettyprint lang-r'>fakeData = rnorm(1e5)
+object.size(fakeData)</pre>
+
+<pre >800040 bytes</pre>
+
+<pre class = 'prettyprint lang-r'>print(object.size(fakeData),units=&quot;Mb&quot;)</pre>
+
+<pre >0.8 Mb</pre>
+
+</article></slide><slide class='segue dark nobackground level1'><hgroup class = 'auto-fadein'><h2>產生新資料變項</h2></hgroup><article >
+
+</article></slide><slide class=''><hgroup><h2>資料還不夠多嗎？為什麼要產生新資料變項？</h2></hgroup><article >
+
+<ul>
+<li>通常原始資料並不包含我們想分析的變項（例如：「氣象參數」與「特定天氣事件」）</li>
+<li>我們需要透過一些計算或轉換，算出我們感興趣的變項</li>
+<li>一般來說，我們會把新變項家到原本分析的 data frame 裡</li>
+<li>常見的新增變項</li>
+<li>遺失值指標</li>
+<li>把連續數字轉換成類別（cut）</li>
+<li>轉換函數</li>
+</ul>
+
+</article></slide><slide class=''><hgroup><h2>範例資料：Baltimore 餐廳</h2></hgroup><article  id="baltimore-">
+
+<p><img class=center src="../figures/restaurants.png" height=500 /></p>
+
+<p><a href='https://data.baltimorecity.gov/Community/Restaurants/k5ry-ef3g' title=''>https://data.baltimorecity.gov/Community/Restaurants/k5ry-ef3g</a></p>
+
+</article></slide><slide class=''><hgroup><h2>取得範例資料</h2></hgroup><article >
+
+<pre class = 'prettyprint lang-r'>if(!file.exists(&quot;./data&quot;)){dir.create(&quot;./data&quot;)}
+fileUrl &lt;- &quot;https://data.baltimorecity.gov/api/views/k5ry-ef3g/rows.csv?accessType=DOWNLOAD&quot;
+download.file(fileUrl,destfile=&quot;./data/restaurants.csv&quot;,method=&quot;curl&quot;)
+restData &lt;- read.csv(&quot;./data/restaurants.csv&quot;)</pre>
+
+</article></slide><slide class=''><hgroup><h2>產生數列：作為資料的索引</h2></hgroup><article >
+
+<p><em>有時候需要為資料建立索引</em></p>
+
+<pre class = 'prettyprint lang-r'>s1 &lt;- seq(1,10,by=2) ; s1</pre>
+
+<pre >[1] 1 3 5 7 9</pre>
+
+<pre class = 'prettyprint lang-r'>s2 &lt;- seq(1,10,length=3); s2</pre>
+
+<pre >[1]  1.0  5.5 10.0</pre>
+
+<pre class = 'prettyprint lang-r'>x &lt;- c(1,3,8,25,100); seq(along = x)</pre>
+
+<pre >[1] 1 2 3 4 5</pre>
+
+</article></slide><slide class=''><hgroup><h2>分割資料：產生子集合</h2></hgroup><article >
+
+<pre class = 'prettyprint lang-r'>restData$nearMe = restData$neighborhood %in% c(&quot;Roland Park&quot;, &quot;Homeland&quot;)
+table(restData$nearMe)</pre>
+
+<pre >
+FALSE  TRUE 
+ 1314    13 </pre>
+
+</article></slide><slide class=''><hgroup><h2>製作二元變項（binary: 0/1）</h2></hgroup><article  id="binary-01">
+
+<pre class = 'prettyprint lang-r'>restData$zipWrong = ifelse(restData$zipCode &lt; 0, TRUE, FALSE)
+table(restData$zipWrong,restData$zipCode &lt; 0)</pre>
+
+<pre >       
+        FALSE TRUE
+  FALSE  1326    0
+  TRUE      0    1</pre>
+
+</article></slide><slide class=''><hgroup><h2>製作類別變項（categorical variables）</h2></hgroup><article  id="categorical-variables">
+
+<pre class = 'prettyprint lang-r'>restData$zipGroups = cut(restData$zipCode,breaks=quantile(restData$zipCode))
+table(restData$zipGroups)</pre>
+
+<pre >
+(-2.123e+04,2.12e+04]  (2.12e+04,2.122e+04] (2.122e+04,2.123e+04] 
+                  337                   375                   282 
+(2.123e+04,2.129e+04] 
+                  332 </pre>
+
+<pre class = 'prettyprint lang-r'>table(restData$zipGroups,restData$zipCode)</pre>
+
+<pre >                       
+                        -21226 21201 21202 21205 21206 21207 21208 21209
+  (-2.123e+04,2.12e+04]      0   136   201     0     0     0     0     0
+  (2.12e+04,2.122e+04]       0     0     0    27    30     4     1     8
+  (2.122e+04,2.123e+04]      0     0     0     0     0     0     0     0
+  (2.123e+04,2.129e+04]      0     0     0     0     0     0     0     0
+                       
+                        21210 21211 21212 21213 21214 21215 21216 21217
+  (-2.123e+04,2.12e+04]     0     0     0     0     0     0     0     0
+  (2.12e+04,2.122e+04]     23    41    28    31    17    54    10    32
+  (2.122e+04,2.123e+04]     0     0     0     0     0     0     0     0
+  (2.123e+04,2.129e+04]     0     0     0     0     0     0     0     0
+                       
+                        21218 21220 21222 21223 21224 21225 21226 21227
+  (-2.123e+04,2.12e+04]     0     0     0     0     0     0     0     0
+  (2.12e+04,2.122e+04]     69     0     0     0     0     0     0     0
+  (2.122e+04,2.123e+04]     0     1     7    56   199    19     0     0
+  (2.123e+04,2.129e+04]     0     0     0     0     0     0    18     4
+                       
+                        21229 21230 21231 21234 21237 21239 21251 21287
+  (-2.123e+04,2.12e+04]     0     0     0     0     0     0     0     0
+  (2.12e+04,2.122e+04]      0     0     0     0     0     0     0     0
+  (2.122e+04,2.123e+04]     0     0     0     0     0     0     0     0
+  (2.123e+04,2.129e+04]    13   156   127     7     1     3     2     1</pre>
+
+</article></slide><slide class=''><hgroup><h2>更快速的切割資料：cut2 (Hmisc)</h2></hgroup><article  id="cut2-hmisc">
+
+<pre class = 'prettyprint lang-r'>require(Hmisc)
+restData$zipGroups = cut2(restData$zipCode,g=4)
+table(restData$zipGroups)</pre>
+
+<pre >
+[-21226,21205) [ 21205,21220) [ 21220,21227) [ 21227,21287] 
+           338            375            300            314 </pre>
+
+</article></slide><slide class=''><hgroup><h2>製作因素變項（factor variables）</h2></hgroup><article  id="factor-variables">
+
+<pre class = 'prettyprint lang-r'>restData$zcf &lt;- factor(restData$zipCode)
+restData$zcf[1:10]</pre>
+
+<pre > [1] 21206 21231 21224 21211 21223 21218 21205 21211 21205 21231
+32 Levels: -21226 21201 21202 21205 21206 21207 21208 21209 ... 21287</pre>
+
+<pre class = 'prettyprint lang-r'>class(restData$zcf)</pre>
+
+<pre >[1] &quot;factor&quot;</pre>
+
+</article></slide><slide class=''><hgroup><h2>因素變項的類別標籤 (levels)</h2></hgroup><article  id="-levels">
+
+<pre class = 'prettyprint lang-r'>yesno &lt;- sample(c(&quot;yes&quot;,&quot;no&quot;),size=10,replace=TRUE)
+yesnofac = factor(yesno,levels=c(&quot;yes&quot;,&quot;no&quot;))
+relevel(yesnofac,ref=&quot;no&quot;)</pre>
+
+<pre > [1] no  no  yes yes yes no  yes no  yes no 
+Levels: no yes</pre>
+
+<pre class = 'prettyprint lang-r'>as.numeric(yesnofac)</pre>
+
+<pre > [1] 2 2 1 1 1 2 1 2 1 2</pre>
+
+</article></slide><slide class=''><hgroup><h2>用 cut2 製作因素變項</h2></hgroup><article  id="-cut2-">
+
+<pre class = 'prettyprint lang-r'>require(Hmisc)
+restData$zipGroups = cut2(restData$zipCode,g=4)
+table(restData$zipGroups)</pre>
+
+<pre >
+[-21226,21205) [ 21205,21220) [ 21220,21227) [ 21227,21287] 
+           338            375            300            314 </pre>
+
+</article></slide><slide class=''><hgroup><h2>用 mutate 函數製作新變項</h2></hgroup><article  id="-mutate-">
+
+<pre class = 'prettyprint lang-r'>require(Hmisc); require(plyr)
+restData2 = mutate(restData, zipGroups=cut2(zipCode,g=4))
+table(restData2$zipGroups)</pre>
+
+<pre >
+[-21226,21205) [ 21205,21220) [ 21220,21227) [ 21227,21287] 
+           338            375            300            314 </pre>
+
+</article></slide><slide class=''><hgroup><h2>常用的轉換</h2></hgroup><article >
+
+<ul>
+<li><code>abs(x)</code> 絕對值</li>
+<li><code>sqrt(x)</code> 開平方根</li>
+<li><code>ceiling(x)</code> 無條件進入 ceiling(3.475) is 4</li>
+<li><code>floor(x)</code> 無條件捨去 floor(3.475) is 3</li>
+<li><code>round(x,digits=n)</code> 四捨五入 round(3.475,digits=2) is 3.48</li>
+<li><code>signif(x,digits=n)</code> 指定小數點位數 signif(3.475,digits=2) is 3.5</li>
+<li><code>cos(x), sin(x)</code> 三角函數</li>
+<li><code>log(x)</code> 自然對數</li>
+<li><code>log2(x)</code>, <code>log10(x)</code> 常用對數</li>
+<li><code>exp(x)</code> 指數函數</li>
+</ul>
+
+</article></slide><slide class='segue dark nobackground level1'><hgroup class = 'auto-fadein'><h2>合併資料</h2></hgroup><article >
+
+</article></slide><slide class=''><hgroup><h2>範例資料：eer review experiment data</h2></hgroup><article  id="eer-review-experiment-data">
+
+<p><img class=center src="./figures/cooperation.png" height=500 /></p>
+
+<p><a href='http://www.plosone.org/article/info:doi/10.1371/journal.pone.0026895' title=''>http://www.plosone.org/article/info:doi/10.1371/journal.pone.0026895</a></p>
+
+</article></slide><slide class=''><hgroup><h2>Peer review data</h2></hgroup><article  id="peer-review-data">
+
+<pre class = 'prettyprint lang-r'>if(!file.exists(&quot;./data&quot;)){dir.create(&quot;./data&quot;)}
+fileUrl1 = &quot;https://dl.dropboxusercontent.com/u/7710864/data/reviews-apr29.csv&quot;
+fileUrl2 = &quot;https://dl.dropboxusercontent.com/u/7710864/data/solutions-apr29.csv&quot;
+download.file(fileUrl1,destfile=&quot;./data/reviews.csv&quot;,method=&quot;curl&quot;)
+download.file(fileUrl2,destfile=&quot;./data/solutions.csv&quot;,method=&quot;curl&quot;)
+reviews = read.csv(&quot;./data/reviews.csv&quot;); solutions &lt;- read.csv(&quot;./data/solutions.csv&quot;)
+head(reviews,2)</pre>
+
+<pre >  id solution_id reviewer_id      start       stop time_left accept
+1  1           3          27 1304095698 1304095758      1754      1
+2  2           4          22 1304095188 1304095206      2306      1</pre>
+
+<pre class = 'prettyprint lang-r'>head(solutions,2)</pre>
+
+<pre >  id problem_id subject_id      start       stop time_left answer
+1  1        156         29 1304095119 1304095169      2343      B
+2  2        269         25 1304095119 1304095183      2329      C</pre>
+
+</article></slide><slide class=''><hgroup><h2>合併資料 - merge()</h2></hgroup><article  id="---merge">
+
+<ul>
+<li>Merges data frames</li>
+<li>Important parameters: <em>x</em>,<em>y</em>,<em>by</em>,<em>by.x</em>,<em>by.y</em>,<em>all</em></li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>names(reviews)</pre>
+
+<pre >[1] &quot;id&quot;          &quot;solution_id&quot; &quot;reviewer_id&quot; &quot;start&quot;       &quot;stop&quot;       
+[6] &quot;time_left&quot;   &quot;accept&quot;     </pre>
+
+<pre class = 'prettyprint lang-r'>names(solutions)</pre>
+
+<pre >[1] &quot;id&quot;         &quot;problem_id&quot; &quot;subject_id&quot; &quot;start&quot;      &quot;stop&quot;      
+[6] &quot;time_left&quot;  &quot;answer&quot;    </pre>
+
+</article></slide><slide class=''><hgroup><h2>合併資料 - merge()</h2></hgroup><article  id="---merge-1">
+
+<pre class = 'prettyprint lang-r'>mergedData = merge(reviews,solutions,by.x=&quot;solution_id&quot;,by.y=&quot;id&quot;,all=TRUE)
+head(mergedData)</pre>
+
+<pre >  solution_id id reviewer_id    start.x     stop.x time_left.x accept
+1           1  4          26 1304095267 1304095423        2089      1
+2           2  6          29 1304095471 1304095513        1999      1
+3           3  1          27 1304095698 1304095758        1754      1
+4           4  2          22 1304095188 1304095206        2306      1
+5           5  3          28 1304095276 1304095320        2192      1
+6           6 16          22 1304095303 1304095471        2041      1
+  problem_id subject_id    start.y     stop.y time_left.y answer
+1        156         29 1304095119 1304095169        2343      B
+2        269         25 1304095119 1304095183        2329      C
+3         34         22 1304095127 1304095146        2366      C
+4         19         23 1304095127 1304095150        2362      D
+5        605         26 1304095127 1304095167        2345      A
+6        384         27 1304095131 1304095270        2242      C</pre>
+
+</article></slide><slide class=''><hgroup><h2>預設：合併所有相同名字的欄位</h2></hgroup><article >
+
+<pre class = 'prettyprint lang-r'>intersect(names(solutions),names(reviews))</pre>
+
+<pre >[1] &quot;id&quot;        &quot;start&quot;     &quot;stop&quot;      &quot;time_left&quot;</pre>
+
+<pre class = 'prettyprint lang-r'>mergedData2 = merge(reviews,solutions,all=TRUE)
+head(mergedData2)</pre>
+
+<pre >  id      start       stop time_left solution_id reviewer_id accept
+1  1 1304095119 1304095169      2343          NA          NA     NA
+2  1 1304095698 1304095758      1754           3          27      1
+3  2 1304095119 1304095183      2329          NA          NA     NA
+4  2 1304095188 1304095206      2306           4          22      1
+5  3 1304095127 1304095146      2366          NA          NA     NA
+6  3 1304095276 1304095320      2192           5          28      1
+  problem_id subject_id answer
+1        156         29      B
+2         NA         NA   &lt;NA&gt;
+3        269         25      C
+4         NA         NA   &lt;NA&gt;
+5         34         22      C
+6         NA         NA   &lt;NA&gt;</pre>
+
+</article></slide><slide class=''><hgroup><h2>使用 join 來合併資料（plyr package）</h2></hgroup><article  id="-join-plyr-package">
+
+<p><em>速度較快，但是功能比較陽春，預設是 left-join </em></p>
+
+<pre class = 'prettyprint lang-r'>df1 = data.frame(id=sample(1:10),x=rnorm(10))
+df2 = data.frame(id=sample(1:10),y=rnorm(10))
+arrange(join(df1,df2),id)</pre>
+
+<pre >   id           x          y
+1   1  2.15231332  1.9963144
+2   2 -1.05016804 -1.8963536
+3   3  0.67458794 -0.7388428
+4   4 -0.02147554  0.9995930
+5   5  0.91803856  2.6998482
+6   6 -0.30831146  1.7473499
+7   7  0.46534390  1.0070288
+8   8  1.48010185 -1.0178761
+9   9 -0.29982608  0.2365916
+10 10 -0.33970819 -0.3393521</pre>
+
+</article></slide><slide class=''><hgroup><h2>合併多個 data frame</h2></hgroup><article  id="-data-frame">
+
+<pre class = 'prettyprint lang-r'>df1 = data.frame(id=sample(1:10),x=rnorm(10))
+df2 = data.frame(id=sample(1:10),y=rnorm(10))
+df3 = data.frame(id=sample(1:10),z=rnorm(10))
+dfList = list(df1,df2,df3)
+join_all(dfList)</pre>
+
+<pre >   id           x          y          z
+1   5 -0.75669479  0.8899654 -0.9235868
+2   8 -1.42659738  1.5570227  1.1704015
+3   9 -0.30153092  1.6631246  1.0485269
+4  10 -0.77924959  0.3985521 -0.1691039
+5   2 -1.06584640  1.2352919 -0.5200716
+6   4  0.07436382  0.4062567  1.0923723
+7   3  2.04580330  1.5945879  0.9849817
+8   7  0.64047066  0.1238878 -1.1863767
+9   1  1.16579466  2.8547047 -0.6123399
+10  6  0.92514533 -0.3779636 -0.5563688</pre>
+
+</article></slide><slide class=''><hgroup><h2>練習</h2></hgroup><article >
+
+<ul>
+<li><a href='http://taqm.epa.gov.tw/taqm/tw/Pm25Index.aspx' title=''>環保署空品監測網</a>觀測站資料</li>
+<li>讀取並且清理2015年所有測站的資料
+
+<ul>
+<li>計算每日最大 O3 濃度</li>
+<li>計算年平均 O3 濃度</li>
+<li>合併經緯度資料</li>
+</ul></li>
+</ul>
+
+</article></slide><slide class=''><hgroup><h2>提示</h2></hgroup><article >
+
+<p>取得資料：</p>
+
+<pre class = 'prettyprint lang-r'>furl &lt;- &quot;http://service.dataqualia.com/misc/2015_east.csv.zip&quot;
+download.file(furl, destfile=&quot;2015_east.csv.zip&quot;)
+sdata &lt;- read.csv(unz(&quot;2015_east.csv.zip&quot;, &quot;2015_east.csv&quot;), encoding=&quot;UTF-8&quot;, stringsAsFactors=F)</pre>
+
+<p>選取特定資料 <code>dplyr::filter</code></p>
+
+<pre class = 'prettyprint lang-r'>require(dplyr)
+o3 &lt;- filter(sdata, sdata$item==&quot;O3&quot;)</pre></article></slide>
 
 
   <slide class="backdrop"></slide>
