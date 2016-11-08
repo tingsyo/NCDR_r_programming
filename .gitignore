@@ -5,3 +5,9 @@
 /slides/*.html
 data_cleaning_cache
 data_cleaning_files
+rp01_basics_datatypes_cache
+rp01_basics_datatypes_files
+/modules/rp01_basics/.Rhistory
+/modules/rp02_controls/.Rhistory
+rp03_functions_packages_files
+rp03_functions_packages_cache
