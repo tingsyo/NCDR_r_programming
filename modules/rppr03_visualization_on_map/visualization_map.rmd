@@ -8,15 +8,339 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = TRUE, warnning=F, message=F, dpi=100, cache=T)
 ```
 
 ## 關於本課程
 
 * 這段課程的主題是「如何在地圖上呈現資料」，包含以下概念：
-  * 基本繪圖原理
   * 相關的 R 套件
   * 實際案例練習
     * 地點標示
     * 事件密度
     * 空間內差
+
+
+## 其他工具也做得到
+
+* Excel
+    * [進階功能Power Map，整合數據和圖像資料做決策](https://plus.104.com.tw/activity/df367b11-be2f-44bc-9297-4ad39de49f7f)
+
+* Google Maps API
+    * [Google Maps JavaScript API: visualization 程式庫](https://developers.google.com/maps/documentation/javascript/visualization)
+
+* 其他服務，例如：
+    * [MapsData](http://www.mapsdata.co.uk/)
+    * [Colore Maps](https://colore.ms/)
+
+
+## R 的繪圖
+
+* 用範例學習：[R Graphics]() by _Paul Murrell_
+    * 著名的參考書，網路版免費
+    * 選你想要畫的圖，看程式碼，然後修改
+
+* [The R Graph Gallery](http://www.r-graph-gallery.com/)
+    * 更多的範例
+
+* 動手做：
+    * [Quick-R: Creating a Graph](http://www.statmethods.net/graphs/creating.html)
+
+
+## ggmap 套件
+
+- ggmap 套件是一個專門用來繪製地圖的 R 套件
+- 使用 ggplot 的語法來結合地圖與資料並進行繪製
+- 有多個地圖來源可以選擇：
+    - Google Map
+    - OpenStreetMap
+    - Stamen Maps
+    - CloudMade Maps
+- 除了基本的資料點標示之外，還可以透過 ggmap 的所提供的函數來使用 Google 地圖 API 的各種功能
+
+
+## ggmap 範例：台灣地圖
+
+```{r, warning=F}
+require(ggmap)
+map <- get_map(location = 'Taiwan', zoom = 7)
+ggmap(map)
+```
+
+## ggmap: get_map()
+
+地圖的位置是透過 location 參數來指定，而 zoom 則是控制地圖的大小
+```{r, warning=F}
+tpe = c(lon=121.5197,lat=25.0356)
+map <- get_map(location=tpe, zoom=11)
+ggmap(map)
+```
+
+
+## language 文字標示的語言
+
+```{r, warning=F}
+map <- get_map(location=tpe, zoom=11, language="zh-TW")
+ggmap(map)
+```
+
+
+## maptype 指定地圖的類型
+
+```{r, warning=F}
+map <- get_map(location=tpe, zoom=11, language="zh-TW", maptype="roadmap")
+ggmap(map)
+```
+
+## maptype 指定地圖的類型
+
+```{r, warning=F}
+map <- get_map(location=tpe, zoom=11, language="zh-TW", maptype="satellite")
+ggmap(map)
+```
+
+## maptype 指定地圖的類型
+
+```{r, warning=F}
+map <- get_map(location=tpe, zoom=11, language="zh-TW", maptype="toner-lite")
+ggmap(map)
+```
+
+
+## 把資料放在地圖上
+
+中央氣象局 2011-2016 年發生的地震資料
+```{r, warning=F}
+earthquake <- read.csv("cwb_earthquake.csv", stringsAsFactors = F, encoding="UTF-8")
+str(earthquake)
+```
+
+
+## 資料加工
+
+```{r, warning=F}
+require(dplyr)
+# 新增「年份」欄位
+earthquake$year <- substr(earthquake$Time,1,4)
+# 挑出 2014~2016 的資料
+eq1416 <- filter(earthquake, year %in% c("2014","2015","2016")) %>%
+  select(Time, Lon, Lat, depth, scale, year)    # 省略不必要的欄位
+str(eq1416)
+```
+
+
+## 直接顯示資料
+```{r, warning=F}
+map <- get_map(location="Taiwan", zoom=7, language="zh-TW")
+ggmap(map) + geom_point(aes(x=Lon,y=Lat,colour=scale), data=earthquake, alpha=0.3)
+```
+
+
+## 依年份顯示資料
+```{r, warning=F, fig.width=10}
+ggmap(map) + 
+  geom_point(aes(x=Lon,y=Lat,colour=scale), data=eq1416, alpha=0.3) + 
+  facet_grid(~year)
+```
+
+
+## 用等高線顯示資料密度
+```{r, warning=F, eval=T}
+ggmap(map, extent="panel", maprange=F) + 
+  geom_density2d(data=eq1416, aes(x=Lon,y=Lat))
+```
+
+
+## 用顏色顯示資料密度
+```{r, echo=T, warning=F, eval=F}
+# 黑白地圖較適合疊上色塊
+map <- get_map(location="Taiwan", zoom=7, language="zh-TW", color="bw")
+# 如同前一張圖的地圖和等高線
+ggmap(map, extent="panel", maprange=F) + 
+# 統計轉換：換成
+  stat_density2d(data=eq1416, aes(x=Lon,y=Lat, fill=..level.., alpha=..level..),
+                 size = 0.1, bins = 100, geom = 'polygon') +
+# 色階及圖說設定
+  scale_fill_gradient("Earthquake Density", low = "green", high = "red") +
+  scale_alpha(range = c(0.10, 0.30), guide = FALSE) +
+# 等高線移到較上面的圖層
+  geom_density2d(data=eq1416, aes(x=Lon,y=Lat, alpha=0.6)) +
+# 全圖主題設定
+  theme(axis.title = element_blank(), text=element_text(size = 12))
+```
+
+## 用顏色顯示資料密度
+
+```{r, echo=F, warning=F, eval=T}
+map <- get_map(location="Taiwan", zoom=7, language="zh-TW", color="bw")
+ggmap(map, extent="panel", maprange=F) + 
+  stat_density2d(data=eq1416, aes(x=Lon,y=Lat, fill=..level.., alpha=..level..),
+                 size = 0.1, bins = 100, geom = 'polygon') +
+  scale_fill_gradient("Earthquake Density", low = "green", high = "red") +
+  scale_alpha(range = c(0.10, 0.30), guide = FALSE) +
+  geom_density2d(data=eq1416, aes(x=Lon,y=Lat, alpha=0.6)) +
+  theme(axis.title = element_blank(), text=element_text(size = 12))
+```
+
+## 逐年地震頻率
+
+facet_wrap(~year)
+```{r, fig.width=10, echo=F, warning=F, eval=T}
+map <- get_map(location="Taiwan", zoom=7, language="zh-TW", color="bw")
+ggmap(map, extent="panel", maprange=F) + 
+  stat_density2d(data=earthquake, aes(x=Lon,y=Lat, fill=..level.., alpha=..level..),
+                 size = 0.1, bins = 100, geom = 'polygon') +
+  scale_fill_gradient("Earthquake Density", low = "green", high = "red") +
+  scale_alpha(range = c(0.10, 0.30), guide = FALSE) +
+  geom_density2d(data=earthquake, aes(x=Lon,y=Lat, alpha=0.6)) +
+  facet_wrap(~year) +
+  theme(axis.title = element_blank(), text=element_text(size = 12))
+```
+
+
+## 空間內插：將點狀觀測轉換到平面網格
+
+有時候我們只有「點」的觀測，但是卻需要整個「面」的資料，例如：氣象觀測都是點狀的，但是數值模式需要的是「網格」資料，這時候就需要空間內插。
+
+###空間內插的意義：
+
+- 資料統合
+    - 整合在空間上無法相提並論的資料，例如家戶收入
+- 預測實際上沒有觀測資料的點
+    - 利用空間分布型態的資訊，來預測沒有觀察點的資料
+
+
+## 空間內插方法的分類
+
+- Global v.s. Local
+    - __Global__: 假設一個全平面的分佈
+    - __Local__: 只考慮鄰近的點的資料
+- Exact v.s. Inexact
+    - __Exact__: 內插後觀測點保留原始的觀測值
+    - __Inexact__: 用內插值取代原始觀測值
+- Deterministic v.s. Stochastic
+    - __deterministic__: 忽略可能的誤差範圍，只提供單一值
+    - __stochastic__: 提供區間估計
+
+
+## 常見的空間內插法
+
+- __trend surface__
+    - 用資料來估計全平面的分佈
+- __IDW__
+    - Inverse Distance Weighting，局部的資料內插法，用觀測點資料的加權平均來預測未知資料點的估計值。通常權重與距離的某次方成反比。
+- __loess__
+    - Local Weighted Smoothing Regression
+- __spline__
+    - 曲面函數估計常用的數值方法
+- __kriging__
+    - 地理統計方法
+
+
+## 在 R 中使用 IDW
+
+需要的套件：
+
+- `gstat`
+- `sp`
+- `maptools`
+
+```{r, warning=F}
+require(gstat)
+require(sp)
+require(maptools)
+```
+
+
+## 準備網格
+
+```{r, warning=T}
+# 設定資料座標
+coordinates(earthquake) = ~Lon+Lat
+
+# 設定網格範圍
+x.range <- as.numeric(c(117.5, 124.5))
+y.range <- as.numeric(c(20.5, 27.2))
+
+# 製作網格點
+grd <- expand.grid(Lon = seq(from = x.range[1], to = x.range[2], by = 0.5),
+                   Lat = seq(from = y.range[1], to = y.range[2], by = 0.5))  
+
+# 設定網格資料座標
+coordinates(grd) <- ~Lon+Lat
+gridded(grd) <- TRUE
+```
+
+
+## 看看網格的長相
+```{r, fig.width=10}
+plot(grd, cex = 1.5, col = "grey")
+points(earthquake, pch = 1, col = "red", cex = 0.3)
+```
+
+
+## 呼叫 IDW 函數
+
+網格準備完成，接著我們把地震規模（scale）內插到網格點上。
+```{r, wanring=F}
+# 呼叫 IDW 函數進行空間內插
+idw <- idw(formula=scale~1, locations=earthquake, newdata=grd, debug.level=0)  
+# 轉換資料格式以利繪圖
+idw.output = as.data.frame(idw, stringsAsFactors=F)
+names(idw.output)[1:3] <- c("lon", "lat", "value")  
+```
+
+套件 `stat` 也包含 `krige` 函數，使用方法與 `idw` 類似，可以參考函數說明。
+
+
+## 在地圖上繪製網格資料
+
+現在，我們可以用 `geom_tile()` 把網格資料疊在地圖上了。
+
+```{r, fig.width=3, fig.align="center", warning=F}
+ggmap(map, extent="panel", maprange=F) + 
+    geom_tile(data=idw.output, aes(x=lon, y=lat, fill=value), alpha=0.5) +
+    scale_fill_gradient(low = "green", high = "red") +
+    theme(axis.title = element_blank(), text = element_text(size = 12))
+```
+
+## 在地圖上繪製網格資料
+
+網格資料的美觀程度，取決於網格的密度，但是網格越密，內插要算越久。以下是把網格間距從 0.5 度調降到 0.1 度的結果。
+
+```{r, fig.width=10, fig.align="center", warning=F, echo=F}
+x.range <- as.numeric(c(117.5, 124.5))
+y.range <- as.numeric(c(20.5, 27.2))
+grd <- expand.grid(Lon = seq(from = x.range[1], to = x.range[2], by = 0.1),
+                   Lat = seq(from = y.range[1], to = y.range[2], by = 0.1))  
+coordinates(grd) <- ~Lon+Lat
+gridded(grd) <- TRUE
+idw <- idw(formula=scale~1, locations=earthquake, newdata=grd, idp=4.0, debug.level=0)  
+idw.output = as.data.frame(idw, stringsAsFactors=F)
+names(idw.output)[1:3] <- c("lon", "lat", "value")  
+ggmap(map, extent="panel", maprange=F) + 
+    geom_tile(data=idw.output, aes(x=lon, y=lat, fill=value), alpha=0.5) +
+    scale_fill_gradient(low = "green", high = "red") +
+    theme(axis.title = element_blank(), text = element_text(size = 12))
+```
+
+
+## 小結
+
+我們示範了三種在地圖上顯示資訊的方式：
+
+- 直接顯示資料值
+- 顯示資料密度
+- 顯示空間內插後的分佈
+
+使用的套件：
+
+- ggplot
+- ggmap
+- gstat
+- sp
+
+
+## 練習
+
+### 上次我們練習合併了環保署的臭氧濃度和測站資料，請利用上面示範的三種方式顯示在地圖上。
