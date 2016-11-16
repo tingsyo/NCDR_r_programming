@@ -13,12 +13,18 @@ knitr::opts_chunk$set(echo = TRUE, warnning=F, message=F, dpi=100, cache=T)
 
 ## 關於本課程
 
-* 這段課程的主題是「如何在地圖上呈現資料」，包含以下概念：
-  * 相關的 R 套件
-  * 實際案例練習
+### 這段課程的主題是「如何在地圖上呈現資料」，包含以下概念：
+* 相關的 R 套件
+* 實際案例練習
     * 地點標示
     * 事件密度
     * 空間內差
+
+### 本課程使用的套件：
+- ggplot
+- ggmap
+- gstat
+- sp
 
 
 ## 其他工具也做得到
@@ -45,6 +51,7 @@ knitr::opts_chunk$set(echo = TRUE, warnning=F, message=F, dpi=100, cache=T)
 
 * 動手做：
     * [Quick-R: Creating a Graph](http://www.statmethods.net/graphs/creating.html)
+
 
 
 ## ggmap 套件
@@ -344,3 +351,21 @@ ggmap(map, extent="panel", maprange=F) +
 ## 練習
 
 ### 上次我們練習合併了環保署的臭氧濃度和測站資料，請利用上面示範的三種方式顯示在地圖上。
+
+可以參考解答：[modules/rppr03_visualization_on_map/exercise_map.r](https://github.com/tingsyo/NCDR_r_programming/blob/master/modules/rppr03_visualization_on_map/exercise_map.r)
+
+
+## 課程尾聲
+
+- R 很容易上手，但跟其它程式語言一樣，需要常常使用才能熟練
+- 線上課程
+    - [R Programming](https://zh-tw.coursera.org/learn/r-programming) by John Hopskins University
+    - [R軟體學會教學影片](http://www.r-software.org/movielist)
+- R 的使用者和套件眾多，通常遇到的問題已經有人解決過了
+    - [CRAN](https://cran.r-project.org/) (The **C**omprehensive **R** **A**rchive **N**etwork)
+    - [*The R journal*](https://journal.r-project.org/)
+    - [R-blogger](https://www.r-bloggers.com/)
+    - [Stackoverflow](http://stackoverflow.com/)
+
+
+
