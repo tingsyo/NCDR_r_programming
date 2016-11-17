@@ -394,14 +394,14 @@ restData &lt;- read.csv(&quot;./data/restaurants.csv&quot;)</pre>
 
 <pre class = 'prettyprint lang-r'>tail(restData,n=3)</pre>
 
-<pre >                   name zipCode  neighborhood councilDistrict
-1325 ZINK&#39;S CAF\302\220   21213 Belair-Edison              13
-1326       ZISSIMOS BAR   21211       Hampden               7
-1327             ZORBAS   21224     Greektown               2
-     policeDistrict                         Location.1
-1325   NORTHEASTERN 3300 LAWNVIEW AVE\nBaltimore, MD\n
-1326       NORTHERN      1023 36TH ST\nBaltimore, MD\n
-1327   SOUTHEASTERN  4710 EASTERN Ave\nBaltimore, MD\n</pre>
+<pre >             name zipCode  neighborhood councilDistrict policeDistrict
+1325 ZINK&#39;S CAFÂ   21213 Belair-Edison              13   NORTHEASTERN
+1326 ZISSIMOS BAR   21211       Hampden               7       NORTHERN
+1327       ZORBAS   21224     Greektown               2   SOUTHEASTERN
+                             Location.1
+1325 3300 LAWNVIEW AVE\nBaltimore, MD\n
+1326      1023 36TH ST\nBaltimore, MD\n
+1327  4710 EASTERN Ave\nBaltimore, MD\n</pre>
 
 </article></slide><slide class=''><hgroup><h2>做摘要</h2></hgroup><article >
 
@@ -627,7 +627,7 @@ FALSE  TRUE
 1319           YETI RESTAURANT &amp; CARRYOUT   21212
 1320                     YORK CLUB TAVERN   21212
 1323            ZEN WEST ROADSIDE CANTINA   21212
-1325                   ZINK&#39;S CAF\302\220   21213
+1325                         ZINK&#39;S CAFÂ   21213
                     neighborhood councilDistrict policeDistrict
 29                      Downtown              11        CENTRAL
 39                 Broadway East              12        EASTERN
@@ -882,7 +882,7 @@ object.size(fakeData)</pre>
 
 </article></slide><slide class=''><hgroup><h2>範例資料：Baltimore 餐廳</h2></hgroup><article  id="baltimore-">
 
-<p><img class=center src="../figures/restaurants.png" height=500 /></p>
+<p><img class=center src="./figures/restaurants.png" height=500 /></p>
 
 <p><a href='https://data.baltimorecity.gov/Community/Restaurants/k5ry-ef3g' title=''>https://data.baltimorecity.gov/Community/Restaurants/k5ry-ef3g</a></p>
 

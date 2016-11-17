@@ -421,7 +421,7 @@ print(object.size(fakeData),units="Mb")
 
 ## 範例資料：Baltimore 餐廳
 
-<img class=center src="../figures/restaurants.png" height=500 />
+<img class=center src="./figures/restaurants.png" height=500 />
 
 
 [https://data.baltimorecity.gov/Community/Restaurants/k5ry-ef3g](https://data.baltimorecity.gov/Community/Restaurants/k5ry-ef3g)
